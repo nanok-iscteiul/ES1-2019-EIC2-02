@@ -12,11 +12,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Main {
 
-	private static final String FILE_NAME = "C:/Users/nicha/Desktop/Long-Method.xlsx";
+	private static final String FILE_NAME = "D:\\LEI\\LEI 3º ano\\Engenharia de Software I\\Long-Method.xlsx";
+	
 
 	public static void main(String[] args) {
+		GUI g = new GUI();
+		g.open();
 		try {
-
 			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));
 			Workbook workbook = new XSSFWorkbook(excelFile);
 			Sheet datatypeSheet = workbook.getSheetAt(0);
