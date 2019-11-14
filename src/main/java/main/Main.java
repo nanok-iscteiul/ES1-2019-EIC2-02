@@ -16,8 +16,8 @@ public class Main {
 	
 
 	public static void main(String[] args) {
-		GUI g = new GUI();
-		g.open();
+		GUI gui = new GUI();
+		gui.open();
 		try {
 			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));
 			Workbook workbook = new XSSFWorkbook(excelFile);
