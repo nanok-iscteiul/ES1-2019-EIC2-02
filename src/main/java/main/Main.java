@@ -25,12 +25,13 @@ public class Main {
 			Iterator<Row> iterator = datatypeSheet.iterator();
 
 			while (iterator.hasNext()) {
-
+				int contadorCelula = 0;
 				Row currentRow = iterator.next();
 				Iterator<Cell> cellIterator = currentRow.iterator();
 
 				while (cellIterator.hasNext()) {
 					Cell currentCell = cellIterator.next();
+					
 					if (currentCell.getCellTypeEnum() == CellType.STRING) {
 						System.out.print(currentCell.getStringCellValue() + "--");
 					} else {
@@ -38,11 +39,12 @@ public class Main {
 							System.out.print(currentCell.getNumericCellValue() + "--");
 						} else {
 							if (currentCell.getCellTypeEnum() == CellType.BOOLEAN) {
-								System.out.println(currentCell.getBooleanCellValue() + "--");
+								System.out.print(currentCell.getBooleanCellValue() + "--");
 							}
 						}
 					}
 				}
+				System.out.println( );
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
