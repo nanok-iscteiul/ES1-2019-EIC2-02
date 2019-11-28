@@ -12,10 +12,12 @@ import javax.swing.WindowConstants;
 
 public class GUI {
 	private JFrame frame = new JFrame("GUI");
+	private Application app;
 	
-	
-	public GUI() {
+	public GUI(Application app) {
+		this.app=app;
 		createFrame();
+		open();
 	}
 	
 	private void createFrame() {
@@ -61,6 +63,10 @@ public class GUI {
         panel.add(ADII);
         
         frame.add(panel, BorderLayout.SOUTH);
+	}
+	
+	private void setThresholds(int loc, int cyclo) {
+		app.setThresholds(loc, cyclo);
 	}
 	
 
