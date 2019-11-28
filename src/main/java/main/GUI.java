@@ -2,6 +2,7 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.JFrame;
@@ -12,9 +13,6 @@ import javax.swing.WindowConstants;
 public class GUI {
 	private JFrame frame = new JFrame("GUI");
 	
-    JPanel panel = new JPanel();
-
-	
 	
 	public GUI() {
 		createFrame();
@@ -22,18 +20,10 @@ public class GUI {
 	
 	private void createFrame() {
 		
-		
+		frame.setLayout(new BorderLayout());
+		addJTextFields();        
 
-        Container c = frame.getContentPane();
-
-        
-        panel.setLayout(new GridLayout(0, 4));
-        
-
-        
-        c.add(panel);
-
-        frame.setSize(1280, 1024);
+        frame.setSize(720, 576);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 	
@@ -42,20 +32,35 @@ public class GUI {
 	}
 	
 	public void addJTextFields() {
+		JPanel panel = new JPanel();
+		Container c = frame.getContentPane();
+
+        panel.setLayout(new GridLayout(0, 4));
+        
+        c.add(panel);
+		
         JTextField DCI = new JTextField("DCI");
-        DCI.setHorizontalAlignment(JTextField.CENTER);
         JTextField DII = new JTextField("DII");
-        DII.setHorizontalAlignment(JTextField.CENTER);
         JTextField ADCI = new JTextField("ADCI");
-        ADCI.setHorizontalAlignment(JTextField.CENTER);
         JTextField ADII = new JTextField("ADII");
+       
+        DCI.setHorizontalAlignment(JTextField.CENTER);
+        DII.setHorizontalAlignment(JTextField.CENTER);
+        ADCI.setHorizontalAlignment(JTextField.CENTER);
         ADII.setHorizontalAlignment(JTextField.CENTER);
         
+        Dimension d = new Dimension(200,50);
+        DCI.setPreferredSize(d);
+        DII.setPreferredSize(d);
+        ADCI.setPreferredSize(d);
+        ADII.setPreferredSize(d);
         
         panel.add(DCI);
         panel.add(DII);
         panel.add(ADCI);
         panel.add(ADII);
+        
+        frame.add(panel, BorderLayout.SOUTH);
 	}
 	
 
