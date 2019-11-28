@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -22,7 +24,7 @@ public class Application {
 	private static int CYCLO_THRESHOLD_IN_USE = CYCLO_THRESHOLD;
 	private int DCI = 0, DII = 0, ADCI = 0, ADII = 0;
 
-	private static String FILE_NAME = "C:\\Users\\nicha\\Desktop\\Long-Method.xlsx";
+	private static String FILE_NAME = "D:\\Documents\\LEI\\3o Ano\\ES1\\Long-Method.xlsx";
 
 	private GUI gui;
 
@@ -41,8 +43,7 @@ public class Application {
 	}
 
 	private void longMethod() {
-		int counterLongMethod = 0;
-		int counterNotLongMethod = 0;
+		
 
 		try {
 			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));
@@ -50,25 +51,60 @@ public class Application {
 			Sheet datatypeSheet = workbook.getSheetAt(0);
 			Iterator<Row> iterator = datatypeSheet.iterator();
 			Row currentRow = iterator.next();
-
+			
+			List<String> longMethods = new ArrayList<String>();
+			List<String> nonLongMethods = new ArrayList<String>();
+			
+			String packageName = "", className = "", methodName = "";
+			int loc = -1, cyclo = -1;
+			
 			while (iterator.hasNext()) {
 				currentRow = iterator.next();
-				Iterator<Cell> cellIterator = currentRow.iterator();
-
-				Cell currentCell = cellIterator.next();
-				currentCell= cellIterator.next();
-				String packageName = currentCell.getStringCellValue(); 
-				currentCell= cellIterator.next();
-				String className = currentCell.getStringCellValue();
-				currentCell = cellIterator.next();
-				String methodName = currentCell.getStringCellValue();
-				currentCell = cellIterator.next();
-				int loc = (int)currentCell.getNumericCellValue();
-				currentCell = cellIterator.next();
-				int cyclo = (int)currentCell.getNumericCellValue();
 				
-				System.out.println("Package: "+packageName + " Class: "+ className+ " methodName: "+ methodName+ " loc="+loc+" cyclo="+ cyclo);
+				int contadorCelula = 0;
+				Iterator<Cell> cellIterator = currentRow.iterator();				
+				
+				while (cellIterator.hasNext()) {
+					Cell currentCell = cellIterator.next();
+					contadorCelula++;
+					
+					if (contadorCelula == 2 )
+						packageName = currentCell.getStringCellValue();
+					
+					if (contadorCelula == 3 ) 
+						className = currentCell.getStringCellValue();
+					
+					if (contadorCelula == 4 ) 
+						methodName = currentCell.getStringCellValue();
+					
+					if (contadorCelula == 5 ) 
+						loc = (int)currentCell.getNumericCellValue();
+						
+					if (contadorCelula == 6 ) {
+						cyclo = (int)currentCell.getNumericCellValue();
+						
+						if(LOC_THRESHOLD_IN_USE < loc && CYCLO_THRESHOLD_IN_USE < cyclo) {
+							longMethods.add(methodName);
+						}
+						
+						else {
+							nonLongMethods.add(methodName);
+						}
+					}
+					
+				//	System.out.println("Package: "+ packageName + " Class: "+ className+ " methodName: "+ methodName+ " loc= "+loc+" cyclo= "+ cyclo);
+				}
 			}
+			
+			for(String i : longMethods) {
+				System.out.println(i + "is long Method");
+			}
+			
+			for(String i : nonLongMethods) {
+				System.out.println(i + "not long Method");
+			}
+			workbook.close();
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -108,6 +144,7 @@ public class Application {
 				}
 				checkErrorIdentifiers(islong, iplasma, pmi);
 			}
+			workbook.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

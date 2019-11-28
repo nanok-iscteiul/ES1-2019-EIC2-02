@@ -117,6 +117,4 @@ public class GUI {
 	private void setThresholds(int loc, int cyclo) {
 		app.setThresholds(loc, cyclo);
 	}
-	
-
 }
