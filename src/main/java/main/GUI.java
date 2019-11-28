@@ -13,6 +13,9 @@ public class GUI {
 	
 	private JFrame frame = new JFrame("GUI");
 	
+    JPanel panel = new JPanel();
+
+	
 	
 	public GUI() {
 		createFrame();
@@ -24,23 +27,10 @@ public class GUI {
 
         Container c = frame.getContentPane();
 
-        JPanel panel = new JPanel();
+        
         panel.setLayout(new GridLayout(0, 4));
         
-        JTextField DCI = new JTextField("DCI");
-        DCI.setHorizontalAlignment(JTextField.CENTER);
-        JTextField DII = new JTextField("DII");
-        DII.setHorizontalAlignment(JTextField.CENTER);
-        JTextField ADCI = new JTextField("ADCI");
-        ADCI.setHorizontalAlignment(JTextField.CENTER);
-        JTextField ADII = new JTextField("ADII");
-        ADII.setHorizontalAlignment(JTextField.CENTER);
-        
-        
-        panel.add(DCI);
-        panel.add(DII);
-        panel.add(ADCI);
-        panel.add(ADII);
+
         
         c.add(panel);
 
@@ -50,6 +40,22 @@ public class GUI {
 	
 	public void open() {
 		frame.setVisible(true);
+	}
+	
+	public void addJTextFields() {
+        JTextField DCI = new JTextField("DCI");
+        DCI.setHorizontalAlignment(JTextField.CENTER);
+        JTextField DII = new JTextField("DII");
+        DII.setHorizontalAlignment(JTextField.CENTER);
+        JTextField ADCI = new JTextField("ADCI");
+        ADCI.setHorizontalAlignment(JTextField.CENTER);
+        JTextField ADII = new JTextField("ADII");
+        ADII.setHorizontalAlignment(JTextField.CENTER);
+        
+        panel.add(DCI);
+        panel.add(DII);
+        panel.add(ADCI);
+        panel.add(ADII);
 	}
 	
 
