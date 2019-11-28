@@ -10,7 +10,6 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 public class GUI {
-	
 	private JFrame frame = new JFrame("GUI");
 	
     JPanel panel = new JPanel();
