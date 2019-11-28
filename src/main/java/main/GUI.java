@@ -52,6 +52,7 @@ public class GUI {
         JTextField ADII = new JTextField("ADII");
         ADII.setHorizontalAlignment(JTextField.CENTER);
         
+        
         panel.add(DCI);
         panel.add(DII);
         panel.add(ADCI);
