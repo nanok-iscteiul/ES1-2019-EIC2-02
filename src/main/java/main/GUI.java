@@ -10,9 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
-
+import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,9 +22,14 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 
 public class GUI {
+
+	JTextField DCIoutput;
+	JTextField DIIoutput;
+	JTextField ADCIoutput;
+	JTextField ADIIoutput;
 	private JFrame frame = new JFrame("GUI");
 	private Application app;
-	
+
 	private JTextField DCIOutput;
 	private JTextField DIIOutput;
 	private JTextField ADCIOutput;
@@ -32,7 +38,7 @@ public class GUI {
 	public GUI(Application app) {
 		this.app = app;
 		createFrame();
-		open();
+		load();
 	}
 
 	private void createFrame() {
@@ -45,27 +51,51 @@ public class GUI {
 	}
 
 	public void open() {
+		frame.setSize(720, 576);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+	}
+
+	public void load() {
 		frame.setVisible(true);
 	}
 
 	public void addJTextFields() {
 		JPanel panel = new JPanel();
+		JPanel panel_aux = new JPanel();
+		
 		Container c = frame.getContentPane();
+
 
 		panel.setLayout(new GridLayout(0, 4));
 
 		c.add(panel);
 
-		JButton openFileButton = new JButton("Open File");
-		openFileButton.setHorizontalAlignment(JButton.CENTER);
-		openFileButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+        panel.setLayout(new GridLayout(0, 4));
+        
+        c.add(panel);
+		
+        final JTextField filePath = new JTextField("Please Load An Exel file");
+        filePath.setEditable(false);
+        
+        JButton loadFileButton = new JButton("load File");
+        loadFileButton.setHorizontalAlignment(JButton.CENTER);
+        loadFileButton.addActionListener(new ActionListener() {
 
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser chooser = new JFileChooser();
+				if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+					app.setPath(chooser.getSelectedFile().getAbsolutePath());
+                }
 			}
 		});
 
-		JButton scanButton = new JButton("Scan File");
-		scanButton.setHorizontalAlignment(JButton.CENTER);
+        JButton defectDetection = new JButton("Defect Defection");
+        defectDetection.setHorizontalAlignment(JButton.CENTER);
+        defectDetection.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                app.defectDetection();
+            }
+        });
 
 		final JTextField loc = new JTextField();
 		loc.addKeyListener(new KeyAdapter() {
@@ -152,25 +182,30 @@ public class GUI {
 		panel.add(DIIOutput);
 		panel.add(ADCIOutput);
 		panel.add(ADIIOutput);
-
-		frame.add(openFileButton, BorderLayout.NORTH);
-		frame.add(scanButton, BorderLayout.CENTER);
+		
+		
+		panel_aux.add(filePath, BorderLayout.CENTER);
+        panel_aux.add(loadFileButton);
+        
+        
+        frame.add(panel_aux,BorderLayout.NORTH);
+        frame.add(defectDetection, BorderLayout.CENTER);
 		frame.add(panel, BorderLayout.SOUTH);
+		
 //		frame.add(longMethod, BorderLayout.SOUTH);
 
 	}
 
 	public void receiveOutputLongMethod(List<Method> longMethods, List<Method> nonLongMethods) {
 		// mostra na gui os resultados da execucao do long method
-		
-
+       
 	}
 
 	public void receiveOutputDefectDetection(int DCIValue, int DIIValue, int ADCIValue, int ADIIValue) {
-		DCIOutput.setText(""+DCIValue);
-		DIIOutput.setText(""+DIIValue);
-		ADCIOutput.setText(""+ADCIValue);
-		ADIIOutput.setText(""+ADIIValue);
+		DCIOutput.setText("" + DCIValue);
+		DIIOutput.setText("" + DIIValue);
+		ADCIOutput.setText("" + ADCIValue);
+		ADIIOutput.setText("" + ADIIValue);
 	}
 
 }

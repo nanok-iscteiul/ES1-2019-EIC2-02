@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JTextField;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -16,7 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Application {
 
-	private static final int LOC_THRESHOLD = 80;//metricas por defeito para o long method
+	private static final int LOC_THRESHOLD = 80;// metricas por defeito para o long method
 	private static final int CYCLO_THRESHOLD = 10;
 
 	private static int LOC_THRESHOLD_IN_USE = LOC_THRESHOLD;
@@ -29,11 +31,11 @@ public class Application {
 
 	public Application() {
 		gui = new GUI(this);
-		defectDetection();//tirar isto
+//		defectDetection();// tirar isto
 //		 longMethod();//tirar isto
 	}
 
-	public void setLocCycloThresholds(int loc, int cyclo) {//definir metrica caso o utilizador altere
+	public void setLocCycloThresholds(int loc, int cyclo) {// definir metrica caso o utilizador altere
 		LOC_THRESHOLD_IN_USE = loc;
 		CYCLO_THRESHOLD_IN_USE = cyclo;
 	}
@@ -42,8 +44,8 @@ public class Application {
 		this.FILE_NAME = path;
 	}
 
-	public void longMethod() {//verifica os metodos que são long method e os que não são e envia das listas 
-		//para a GUI para que os metodos sejam apresentados.
+	public void longMethod() {
+
 		try {
 			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));
 			Workbook workbook = new XSSFWorkbook(excelFile);
@@ -127,7 +129,6 @@ public class Application {
 			Sheet datatypeSheet = workbook.getSheetAt(0);
 			Iterator<Row> iterator = datatypeSheet.iterator();
 			Row currentRow = iterator.next();
-
 			while (iterator.hasNext()) {
 				int contadorCelula = 0;
 				boolean islong = false, iplasma = false, pmi = false;
@@ -180,4 +181,5 @@ public class Application {
 		ADCI = 0;
 		ADII = 0;
 	}
+
 }
