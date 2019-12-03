@@ -23,11 +23,7 @@ import javax.swing.border.Border;
 
 public class GUI {
 
-	JTextField DCIoutput;
-	JTextField DIIoutput;
-	JTextField ADCIoutput;
-	JTextField ADIIoutput;
-	private JFrame frame = new JFrame("GUI");
+	private JFrame frame = new JFrame("Aplicação");
 	private Application app;
 
 	private JTextField DCIOutput;
@@ -50,12 +46,12 @@ public class GUI {
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
-	public void open() {
+	private void open() {
 		frame.setSize(720, 576);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
-	public void load() {
+	private void load() {
 		frame.setVisible(true);
 	}
 
