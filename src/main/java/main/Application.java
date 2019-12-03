@@ -1,6 +1,5 @@
 package main;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,23 +16,24 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Application {
 
-	private static final int LOC_THRESHOLD = 80;
+	private static final int LOC_THRESHOLD = 80;//metricas por defeito para o long method
 	private static final int CYCLO_THRESHOLD = 10;
 
 	private static int LOC_THRESHOLD_IN_USE = LOC_THRESHOLD;
 	private static int CYCLO_THRESHOLD_IN_USE = CYCLO_THRESHOLD;
 	private int DCI = 0, DII = 0, ADCI = 0, ADII = 0;
 
-	private static String FILE_NAME = "D:\\Documents\\LEI\\3o Ano\\ES1\\Long-Method.xlsx";
+	private String FILE_NAME = "C:\\Users\\nicha\\Desktop\\Long-Method.xlsx";
 
 	private GUI gui;
 
 	public Application() {
 		gui = new GUI(this);
-		longMethod();
+		defectDetection();//tirar isto
+//		 longMethod();//tirar isto
 	}
 
-	public void setThresholds(int loc, int cyclo) {
+	public void setLocCycloThresholds(int loc, int cyclo) {//definir metrica caso o utilizador altere
 		LOC_THRESHOLD_IN_USE = loc;
 		CYCLO_THRESHOLD_IN_USE = cyclo;
 	}
@@ -42,69 +42,74 @@ public class Application {
 		this.FILE_NAME = path;
 	}
 
-	private void longMethod() {
-		
-
+	public void longMethod() {//verifica os metodos que são long method e os que não são e envia das listas 
+		//para a GUI para que os metodos sejam apresentados.
 		try {
 			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));
 			Workbook workbook = new XSSFWorkbook(excelFile);
 			Sheet datatypeSheet = workbook.getSheetAt(0);
 			Iterator<Row> iterator = datatypeSheet.iterator();
 			Row currentRow = iterator.next();
-			
-			List<String> longMethods = new ArrayList<String>();
-			List<String> nonLongMethods = new ArrayList<String>();
-			
+
+			List<Method> longMethods = new ArrayList<Method>();
+			List<Method> nonLongMethods = new ArrayList<Method>();
+
 			String packageName = "", className = "", methodName = "";
 			int loc = -1, cyclo = -1;
-			
+			int methodId = -1;
+
 			while (iterator.hasNext()) {
 				currentRow = iterator.next();
-				
+
 				int contadorCelula = 0;
-				Iterator<Cell> cellIterator = currentRow.iterator();				
-				
+				Iterator<Cell> cellIterator = currentRow.iterator();
+
 				while (cellIterator.hasNext()) {
 					Cell currentCell = cellIterator.next();
 					contadorCelula++;
-					
-					if (contadorCelula == 2 )
+
+					if (contadorCelula == 1) {
+						methodId = (int) currentCell.getNumericCellValue();
+					}
+
+					if (contadorCelula == 2)
 						packageName = currentCell.getStringCellValue();
-					
-					if (contadorCelula == 3 ) 
+
+					if (contadorCelula == 3)
 						className = currentCell.getStringCellValue();
-					
-					if (contadorCelula == 4 ) 
+
+					if (contadorCelula == 4)
 						methodName = currentCell.getStringCellValue();
-					
-					if (contadorCelula == 5 ) 
-						loc = (int)currentCell.getNumericCellValue();
-						
-					if (contadorCelula == 6 ) {
-						cyclo = (int)currentCell.getNumericCellValue();
-						
-						if(LOC_THRESHOLD_IN_USE < loc && CYCLO_THRESHOLD_IN_USE < cyclo) {
-							longMethods.add(methodName);
+
+					if (contadorCelula == 5)
+						loc = (int) currentCell.getNumericCellValue();
+
+					if (contadorCelula == 6) {
+						cyclo = (int) currentCell.getNumericCellValue();
+
+						if (LOC_THRESHOLD_IN_USE < loc && CYCLO_THRESHOLD_IN_USE < cyclo) {
+							longMethods.add(new Method(methodId, methodName));
 						}
-						
+
 						else {
-							nonLongMethods.add(methodName);
+							nonLongMethods.add(new Method(methodId, methodName));
 						}
 					}
-					
-				//	System.out.println("Package: "+ packageName + " Class: "+ className+ " methodName: "+ methodName+ " loc= "+loc+" cyclo= "+ cyclo);
+					// System.out.println("Package: "+ packageName + " Class: "+ className+ "
+					// methodName: "+ methodName+ " loc= "+loc+" cyclo= "+ cyclo);
 				}
 			}
-			
-			for(String i : longMethods) {
-				System.out.println(i + "is long Method");
+
+			for (Method m : longMethods) {
+				System.out.println(m + "is long Method");
 			}
-			
-			for(String i : nonLongMethods) {
-				System.out.println(i + "not long Method");
+
+			for (Method m : nonLongMethods) {
+				System.out.println(m + "not long Method");
 			}
 			workbook.close();
-			
+			gui.receiveOutputLongMethod(longMethods, nonLongMethods);
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -113,55 +118,66 @@ public class Application {
 
 	}
 
-	
-
-	public void defectDetection(){
-		
-		//Corre o excel
+	public void defectDetection() {
+		resetCounters();
+		// Corre o excel
 		try {
 			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));
 			Workbook workbook = new XSSFWorkbook(excelFile);
 			Sheet datatypeSheet = workbook.getSheetAt(0);
 			Iterator<Row> iterator = datatypeSheet.iterator();
+			Row currentRow = iterator.next();
 
 			while (iterator.hasNext()) {
 				int contadorCelula = 0;
 				boolean islong = false, iplasma = false, pmi = false;
-				Row currentRow = iterator.next();
+				currentRow = iterator.next();
 				Iterator<Cell> cellIterator = currentRow.iterator();
 
 				while (cellIterator.hasNext()) {
 					Cell currentCell = cellIterator.next();
 					contadorCelula++;
-					
-					if (contadorCelula == 9 ) {
-						islong = currentCell.getBooleanCellValue();}
-					if (contadorCelula == 10 ) {
-						iplasma = currentCell.getBooleanCellValue();}
-					if (contadorCelula == 11 ) {
+
+					if (contadorCelula == 9) {
+						islong = currentCell.getBooleanCellValue();
+					}
+					if (contadorCelula == 10) {
+						iplasma = currentCell.getBooleanCellValue();
+					}
+					if (contadorCelula == 11) {
 						pmi = currentCell.getBooleanCellValue();
-					}		
+					}
 				}
 				checkErrorIdentifiers(islong, iplasma, pmi);
 			}
+			gui.receiveOutputDefectDetection(DCI, DII, ADCI, ADII);
 			workbook.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}		
-	}
-	
-	
-	private void checkErrorIdentifiers(boolean islong, boolean iplasma, boolean pmi) {
-		if (islong == true && (iplasma == true || pmi == true)) {
-			DCI++;}
-		if (islong == false && (iplasma == true || pmi == true)) {
-			DII++;}
-		if (islong == false && (iplasma == false || pmi == false)) {
-			ADCI++;}
-		if (islong == true && (iplasma == false || pmi == false)) {
-			ADII++;}
+		}
 	}
 
+	private void checkErrorIdentifiers(boolean islong, boolean iplasma, boolean pmi) {
+		if (islong == true && (iplasma == true || pmi == true)) {
+			DCI++;
+		}
+		if (islong == false && (iplasma == true || pmi == true)) {
+			DII++;
+		}
+		if (islong == false && (iplasma == false || pmi == false)) {
+			ADCI++;
+		}
+		if (islong == true && (iplasma == false || pmi == false)) {
+			ADII++;
+		}
+	}
+
+	private void resetCounters() {
+		DCI = 0;
+		DII = 0;
+		ADCI = 0;
+		ADII = 0;
+	}
 }
