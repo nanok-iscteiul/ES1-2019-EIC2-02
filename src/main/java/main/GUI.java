@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
-import java.io.File;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -61,7 +61,6 @@ public class GUI {
 		
 		Container c = frame.getContentPane();
 
-
 		panel.setLayout(new GridLayout(0, 4));
 
 		c.add(panel);
@@ -101,7 +100,6 @@ public class GUI {
 					keyEvent.consume();
 				}
 			}
-
 		});
 
 		final JTextField cyclo = new JTextField();
