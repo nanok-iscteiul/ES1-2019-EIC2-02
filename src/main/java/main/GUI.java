@@ -12,6 +12,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -52,7 +53,7 @@ public class GUI {
 		//Parte de cima 
 		JPanel panel_aux1 = new JPanel();
 		
-        filePath = new JTextField("Please Load An Exel file");
+		filePath = new JTextField("Please Load An Exel file");
         filePath.setEditable(false);
         panel_aux1.add(filePath, BorderLayout.LINE_START);
         
@@ -86,7 +87,6 @@ public class GUI {
 					keyEvent.consume();
 				}
 			}
-
 		});
 
 		final JTextField cyclo = new JTextField("10");
