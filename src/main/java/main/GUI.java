@@ -2,15 +2,16 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.List;
-import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -22,10 +23,11 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 
 public class GUI {
-
-	private JFrame frame = new JFrame("Aplicação");
+	
 	private Application app;
-
+	private JFrame frame = new JFrame("Aplicação");
+	private JTextField filePath;
+	private JButton defectDetection;
 	private JTextField DCIOutput;
 	private JTextField DIIOutput;
 	private JTextField ADCIOutput;
@@ -34,66 +36,49 @@ public class GUI {
 	public GUI(Application app) {
 		this.app = app;
 		createFrame();
-		load();
+		frame.setVisible(true);
 	}
 
 	private void createFrame() {
 
 		frame.setLayout(new BorderLayout());
-		addJTextFields();
+		addFields();
 
 		frame.setSize(720, 576);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
-	private void open() {
-		frame.setSize(720, 576);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-	}
-
-	private void load() {
-		frame.setVisible(true);
-	}
-
-	public void addJTextFields() {
-		JPanel panel = new JPanel();
-		JPanel panel_aux = new JPanel();
+	public void addFields() {
+		//Parte de cima 
+		JPanel panel_aux1 = new JPanel();
 		
-		Container c = frame.getContentPane();
-
-
-		panel.setLayout(new GridLayout(0, 4));
-
-		c.add(panel);
-
-        panel.setLayout(new GridLayout(0, 4));
-        
-        c.add(panel);
-		
-        final JTextField filePath = new JTextField("Please Load An Exel file");
+        filePath = new JTextField("Please Load An Exel file");
         filePath.setEditable(false);
+        panel_aux1.add(filePath, BorderLayout.LINE_START);
         
-        JButton loadFileButton = new JButton("load File");
+        JButton loadFileButton = new JButton("Load File");
         loadFileButton.setHorizontalAlignment(JButton.CENTER);
+        panel_aux1.add(loadFileButton);
         loadFileButton.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
 				if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 					app.setPath(chooser.getSelectedFile().getAbsolutePath());
+					filePath.setText(chooser.getSelectedFile().getName());
+					defectDetection.setEnabled(true);
                 }
 			}
 		});
-
-        JButton defectDetection = new JButton("Defect Defection");
-        defectDetection.setHorizontalAlignment(JButton.CENTER);
-        defectDetection.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                app.defectDetection();
-            }
-        });
-
-		final JTextField loc = new JTextField();
+        
+        frame.add(panel_aux1,BorderLayout.BEFORE_FIRST_LINE);
+        //Fim da Parte de cima
+       
+        //Depois da Parte de cima
+        JPanel panel_aux2 = new JPanel();
+        
+		final JTextField loc = new JTextField("80");
+		loc.setHorizontalAlignment(JTextField.CENTER);
+		panel_aux2.add(loc);
 		loc.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
@@ -104,7 +89,9 @@ public class GUI {
 
 		});
 
-		final JTextField cyclo = new JTextField();
+		final JTextField cyclo = new JTextField("10");
+		cyclo.setHorizontalAlignment(JTextField.CENTER);
+		panel_aux2.add(cyclo);
 		cyclo.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
@@ -114,9 +101,9 @@ public class GUI {
 			}
 		});
 
-		JButton longMethod = new JButton("longMethod");
+		JButton longMethod = new JButton("Long Method");
+		panel_aux2.add(longMethod);
 		longMethod.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent e) {
 				if (loc.getText() != "" && cyclo.getText() != "") {
 					int locValue = Integer.parseInt(loc.getText());
@@ -127,68 +114,76 @@ public class GUI {
 				}
 			}
 		});
-
-		loc.setHorizontalAlignment(JTextField.CENTER);
-		frame.add(loc, BorderLayout.CENTER);
-
+		frame.add(panel_aux2, FlowLayout.CENTER);
+		
+		// parte de baixo
+		JPanel panel_aux9 = new JPanel();
+		defectDetection = new JButton("Defect Defection");
+        defectDetection.setHorizontalAlignment(JButton.CENTER);
+        defectDetection.setEnabled(false);
+        panel_aux9.add(defectDetection);
+        defectDetection.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                app.defectDetection();
+            }
+        });
+        
+        frame.add(panel_aux9, BorderLayout.BEFORE_LINE_BEGINS);
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(0, 4));
 		Border border = BorderFactory.createLineBorder(Color.BLUE, 1);
+		Dimension dim = new Dimension(200, 50);
+		
 		JLabel DCI = new JLabel("DCI");
+		DCI.setHorizontalAlignment(JTextField.CENTER);
 		DCI.setBorder(border);
+		DCI.setPreferredSize(dim);
+		panel.add(DCI);
+		
 		JLabel DII = new JLabel("DII");
+		DII.setHorizontalAlignment(JTextField.CENTER);
 		DII.setBorder(border);
+		DII.setPreferredSize(dim);
+		panel.add(DII);
+		
 		JLabel ADCI = new JLabel("ADCI");
+		ADCI.setHorizontalAlignment(JTextField.CENTER);
 		ADCI.setBorder(border);
+		ADCI.setPreferredSize(dim);
+		panel.add(ADCI);
+		
 		JLabel ADII = new JLabel("ADII");
+		ADII.setHorizontalAlignment(JTextField.CENTER);
 		ADII.setBorder(border);
+		ADII.setPreferredSize(dim);
+		panel.add(ADII);
 
-		DCIOutput = new JTextField("Press Scan");
+		DCIOutput = new JTextField("Load File");
 		DCIOutput.setHorizontalAlignment(JTextField.CENTER);
 		DCIOutput.setEditable(false);
 		DCIOutput.setBorder(border);
-		DIIOutput = new JTextField("Press Scan");
+		panel.add(DCIOutput);
+		
+		DIIOutput = new JTextField("Load File");
 		DIIOutput.setHorizontalAlignment(JTextField.CENTER);
 		DIIOutput.setEditable(false);
 		DIIOutput.setBorder(border);
-		ADCIOutput = new JTextField("Press Scan");
+		panel.add(DIIOutput);
+		
+		ADCIOutput = new JTextField("Load File");
 		ADCIOutput.setHorizontalAlignment(JTextField.CENTER);
 		ADCIOutput.setEditable(false);
 		ADCIOutput.setBorder(border);
-		ADIIOutput = new JTextField("Press Scan");
+		panel.add(ADCIOutput);
+		
+		ADIIOutput = new JTextField("Load File");
 		ADIIOutput.setHorizontalAlignment(JTextField.CENTER);
 		ADIIOutput.setEditable(false);
 		ADIIOutput.setBorder(border);
-
-		DCI.setHorizontalAlignment(JTextField.CENTER);
-		DII.setHorizontalAlignment(JTextField.CENTER);
-		ADCI.setHorizontalAlignment(JTextField.CENTER);
-		ADII.setHorizontalAlignment(JTextField.CENTER);
-
-		Dimension d = new Dimension(200, 50);
-		DCI.setPreferredSize(d);
-		DII.setPreferredSize(d);
-		ADCI.setPreferredSize(d);
-		ADII.setPreferredSize(d);
-
-		panel.add(DCI);
-		panel.add(DII);
-		panel.add(ADCI);
-		panel.add(ADII);
-
-		panel.add(DCIOutput);
-		panel.add(DIIOutput);
-		panel.add(ADCIOutput);
 		panel.add(ADIIOutput);
 		
-		
-		panel_aux.add(filePath, BorderLayout.CENTER);
-        panel_aux.add(loadFileButton);
-        
-        
-        frame.add(panel_aux,BorderLayout.NORTH);
-        frame.add(defectDetection, BorderLayout.CENTER);
-		frame.add(panel, BorderLayout.SOUTH);
-		
-//		frame.add(longMethod, BorderLayout.SOUTH);
+		frame.add(panel, BorderLayout.AFTER_LAST_LINE);
 
 	}
 
