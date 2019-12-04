@@ -3,6 +3,7 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,6 +29,8 @@ public class GUI {
 	private Application app;
 	private JFrame frame = new JFrame("Aplicação");
 	private JTextField filePath;
+	private JButton longMethod;
+	private JButton featureEnvyButton;
 	private JButton defectDetection;
 	private JTextField DCIOutput;
 	private JTextField DIIOutput;
@@ -41,7 +45,7 @@ public class GUI {
 
 	private void createFrame() {
 
-		frame.setLayout(new GridLayout(5, 5));
+		frame.setLayout(new GridLayout(7, 10));
 		addFields();
 
 		frame.setSize(720, 576);
@@ -53,11 +57,14 @@ public class GUI {
 		JPanel panel_aux1 = new JPanel();
 		
 		filePath = new JTextField("Please Load An Exel file");
+		filePath.setHorizontalAlignment(JTextField.CENTER);
         filePath.setEditable(false);
+        filePath.setPreferredSize(new Dimension(328, 50));
         panel_aux1.add(filePath, BorderLayout.LINE_START);
         
         JButton loadFileButton = new JButton("Load File");
         loadFileButton.setHorizontalAlignment(JButton.CENTER);
+        loadFileButton.setPreferredSize(new Dimension(300, 50));
         panel_aux1.add(loadFileButton);
         loadFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -66,6 +73,8 @@ public class GUI {
 					app.setPath(chooser.getSelectedFile().getAbsolutePath());
 					filePath.setText(chooser.getSelectedFile().getName());
 					defectDetection.setEnabled(true);
+					featureEnvyButton.setEnabled(true);
+					longMethod.setEnabled(true);
                 }
 			}
 		});
@@ -74,10 +83,19 @@ public class GUI {
         //Fim da Parte de cima
        
         //Depois da Parte de cima
+        Border border = BorderFactory.createLineBorder(Color.BLUE, 1);
+        
         JPanel panel_aux2 = new JPanel();
+        
+        JLabel linesOfCode = new JLabel("Lines of code");
+        linesOfCode.setHorizontalAlignment(JLabel.CENTER);
+        linesOfCode.setBorder(border);
+        linesOfCode.setPreferredSize(new Dimension(115, 30));
+		panel_aux2.add(linesOfCode);
         
 		final JTextField loc = new JTextField("80");
 		loc.setHorizontalAlignment(JTextField.CENTER);
+		loc.setPreferredSize(new Dimension(30, 30));
 		panel_aux2.add(loc);
 		loc.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
@@ -87,9 +105,16 @@ public class GUI {
 				}
 			}
 		});
+		
+		JLabel cyclomaticComplexity = new JLabel("Cyclomatic Complexity");
+		cyclomaticComplexity.setHorizontalAlignment(JLabel.CENTER);
+		cyclomaticComplexity.setBorder(border);
+		cyclomaticComplexity.setPreferredSize(new Dimension(140, 30));
+		panel_aux2.add(cyclomaticComplexity);
 
 		final JTextField cyclo = new JTextField("10");
 		cyclo.setHorizontalAlignment(JTextField.CENTER);
+		cyclo.setPreferredSize(new Dimension(30, 30));
 		panel_aux2.add(cyclo);
 		cyclo.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
@@ -99,8 +124,10 @@ public class GUI {
 				}
 			}
 		});
-
-		JButton longMethod = new JButton("Long Method");
+		
+		longMethod = new JButton("Long Method");
+		longMethod.setPreferredSize(new Dimension(300, 50));
+		longMethod.setEnabled(false);
 		panel_aux2.add(longMethod);
 		longMethod.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -113,13 +140,82 @@ public class GUI {
 				}
 			}
 		});
+		
 		frame.add(panel_aux2);
 		
+		//Antes da parte de baixo
+		
+		JPanel panel_aux3 = new JPanel();
+		
+		
+		JLabel featureEnvy = new JLabel("Feature Envy");
+		featureEnvy.setHorizontalAlignment(JLabel.CENTER);
+		featureEnvy.setBorder(border);
+		featureEnvy.setPreferredSize(new Dimension(600, 50));
+		panel_aux3.add(featureEnvy);
+		
+		frame.add(panel_aux3);
+		
+		JPanel panel_aux4 = new JPanel();
+		
+		JLabel atfd = new JLabel("ATFD >");
+		atfd.setHorizontalAlignment(JLabel.CENTER);
+		atfd.setBorder(border);
+		atfd.setPreferredSize(new Dimension(75, 30));
+		panel_aux4.add(atfd);
+		
+		JTextField atfd_txt = new JTextField("0");
+		atfd_txt.setHorizontalAlignment(JTextField.CENTER);
+		atfd_txt.setPreferredSize(new Dimension(30, 30));
+		panel_aux4.add(atfd_txt);
+		
+		String[] option = { "and", "or"};
+		JComboBox optionList = new JComboBox(option);
+		optionList.setSelectedIndex(1);
+		optionList.setPreferredSize(new Dimension(108, 30));
+		panel_aux4.add(optionList);
+		optionList.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 JComboBox cb = (JComboBox)e.getSource();
+			     String optionSelected = (String)cb.getSelectedItem();
+			     if(optionSelected.equals("and")) {
+			    	 //and things
+			     }
+			     if(optionSelected.equals("or")) {
+			    	 //or things
+			     }
+			}
+		});
+		
+		JLabel laa = new JLabel("LAA <");
+		laa.setHorizontalAlignment(JLabel.CENTER);
+		laa.setBorder(border);
+		laa.setPreferredSize(new Dimension(75, 30));
+		panel_aux4.add(laa);
+		
+		JTextField laa_txt = new JTextField("0");
+		laa_txt.setHorizontalAlignment(JTextField.CENTER);
+		laa_txt.setPreferredSize(new Dimension(30, 30));
+		panel_aux4.add(laa_txt);
+		
+		featureEnvyButton = new JButton("Feature Envy Start");
+		featureEnvyButton.setHorizontalAlignment(JButton.CENTER);
+		featureEnvyButton.setPreferredSize(new Dimension(300, 50));
+		featureEnvyButton.setEnabled(false);
+        panel_aux4.add(featureEnvyButton);
+        featureEnvyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		frame.add(panel_aux4);
 		// parte de baixo
 		JPanel panel_aux9 = new JPanel();
 		defectDetection = new JButton("Defect Defection");
         defectDetection.setHorizontalAlignment(JButton.CENTER);
         defectDetection.setEnabled(false);
+        defectDetection.setPreferredSize(new Dimension(600, 50));
         panel_aux9.add(defectDetection);
         defectDetection.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -131,7 +227,6 @@ public class GUI {
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 4));
-		Border border = BorderFactory.createLineBorder(Color.BLUE, 1);
 		Dimension dim = new Dimension(200, 50);
 		
 		JLabel DCI = new JLabel("DCI");
