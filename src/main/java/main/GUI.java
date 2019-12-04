@@ -2,7 +2,6 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -10,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -19,9 +17,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
 
 public class GUI {
 	
@@ -189,6 +189,23 @@ public class GUI {
 
 	public void receiveOutputLongMethod(List<Method> longMethods, List<Method> nonLongMethods) {
 		// mostra na gui os resultados da execucao do long method
+		JFrame longMethodFrame = new JFrame("Long Method Results");//nova frame para os resultados
+		String [] col = {"MethodId", "MethodName"};
+		DefaultTableModel tableModel = new DefaultTableModel(col,0);
+		JTable table = new JTable(tableModel);
+		
+		for (Method m : longMethods) {//adicionar os longMethod à tabela
+			String [] aux = {""+m.getMethodId(),m.getName()};
+			tableModel.addRow(aux);
+		}
+		
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.setEnabled(false);//para nao poder ser editada
+		
+		longMethodFrame.add(table);
+		longMethodFrame.pack();
+		longMethodFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+		longMethodFrame.setVisible(true);
        
 	}
 
