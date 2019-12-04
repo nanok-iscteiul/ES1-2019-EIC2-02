@@ -23,7 +23,7 @@ public class Application {
 	private static int CYCLO_THRESHOLD_IN_USE = CYCLO_THRESHOLD;
 	private int DCI = 0, DII = 0, ADCI = 0, ADII = 0;
 
-	private String FILE_NAME = "C:\\Users\\nicha\\Desktop\\Long-Method.xlsx";//caminho do ficheiro excel
+	private String FILE_NAME = "C:\\Users\\nicha\\Desktop\\Long-Method.xlsx";// caminho do ficheiro excel
 
 	private GUI gui;
 
@@ -42,45 +42,49 @@ public class Application {
 
 	public void longMethod() {
 		try {
-			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));//abre o ficheiro excel
+			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));// abre o ficheiro excel
 			Workbook workbook = new XSSFWorkbook(excelFile);
 			Sheet datatypeSheet = workbook.getSheetAt(0);
 			Iterator<Row> iterator = datatypeSheet.iterator();
-			Row currentRow = iterator.next();//iterador de linhas
+			Row currentRow = iterator.next();// iterador de linhas
 
-			List<Method> longMethods = new ArrayList<Method>();//lista dos metodos que são long method de acordo com as metricas indicadas
-			List<Method> nonLongMethods = new ArrayList<Method>();//lista dos metodos que não sãp long method de acordo com as metricas indicadas
+			List<Method> longMethods = new ArrayList<Method>();// lista dos metodos que são long method de acordo com as
+																// metricas indicadas
+			List<Method> nonLongMethods = new ArrayList<Method>();// lista dos metodos que não sãp long method de acordo
+																	// com as metricas indicadas
 
 			String methodName = "";
 			int loc = -1, cyclo = -1;
 			int methodId = -1;
 
-			while (iterator.hasNext()) {//percorrer todas as linhas do ficheiro
-				currentRow = iterator.next();//iterador de celulas
+			while (iterator.hasNext()) {// percorrer todas as linhas do ficheiro
+				currentRow = iterator.next();// iterador de celulas
 
-				int contadorCelula = 0;//contador auxiliar para saber que celula se está a analisar
+				int contadorCelula = 0;// contador auxiliar para saber que celula se está a analisar
 				Iterator<Cell> cellIterator = currentRow.iterator();
 
-				while (cellIterator.hasNext()) {//percorrer as celulas de cada linha
-					Cell currentCell = cellIterator.next();//celula a analisar
+				while (cellIterator.hasNext()) {// percorrer as celulas de cada linha
+					Cell currentCell = cellIterator.next();// celula a analisar
 					contadorCelula++;
 
-					if (contadorCelula == 1)//obter o ID do metodo
+					if (contadorCelula == 1)// obter o ID do metodo
 						methodId = (int) currentCell.getNumericCellValue();
 
-					if (contadorCelula == 4)//obter o nome do metodo
+					if (contadorCelula == 4)// obter o nome do metodo
 						methodName = currentCell.getStringCellValue();
 
-					if (contadorCelula == 5)//obter o numero de linhas de codigo do metodo
+					if (contadorCelula == 5)// obter o numero de linhas de codigo do metodo
 						loc = (int) currentCell.getNumericCellValue();
 
-					if (contadorCelula == 6) {//obter a complexidade ciclomatica e inserir o metodo na lista adequada
+					if (contadorCelula == 6) {// obter a complexidade ciclomatica e inserir o metodo na lista adequada
 						cyclo = (int) currentCell.getNumericCellValue();
 
 						if (LOC_THRESHOLD_IN_USE < loc && CYCLO_THRESHOLD_IN_USE < cyclo) {
-							longMethods.add(new Method(methodId, methodName));//no caso de ser longMethod para as metricas indicadas
+							longMethods.add(new Method(methodId, methodName));// no caso de ser longMethod para as
+																				// metricas indicadas
 						} else {
-							nonLongMethods.add(new Method(methodId, methodName));//no caso de não ser longMethod para as metricas indicadas.
+							nonLongMethods.add(new Method(methodId, methodName));// no caso de não ser longMethod para
+																					// as metricas indicadas.
 						}
 					}
 				}
@@ -107,28 +111,28 @@ public class Application {
 	public void defectDetection() {
 		resetCounters();
 		try {
-			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));//abrir o ficheiro excel
+			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));// abrir o ficheiro excel
 			Workbook workbook = new XSSFWorkbook(excelFile);
 			Sheet datatypeSheet = workbook.getSheetAt(0);
 			Iterator<Row> iterator = datatypeSheet.iterator();
-			Row currentRow = iterator.next();//iterador de linhas
-			while (iterator.hasNext()) {//percorer todas as linhas 
+			Row currentRow = iterator.next();// iterador de linhas
+			while (iterator.hasNext()) {// percorer todas as linhas
 				int contadorCelula = 0;
 				boolean islong = false, iplasma = false, pmi = false;
 				currentRow = iterator.next();
-				Iterator<Cell> cellIterator = currentRow.iterator();//iterador de celulas
+				Iterator<Cell> cellIterator = currentRow.iterator();// iterador de celulas
 
-				while (cellIterator.hasNext()) {//percorer todas as celulas de cada linha
-					Cell currentCell = cellIterator.next();//celula a analisar
+				while (cellIterator.hasNext()) {// percorer todas as celulas de cada linha
+					Cell currentCell = cellIterator.next();// celula a analisar
 					contadorCelula++;
 
-					if (contadorCelula == 9) {//valor do is_longMethod
+					if (contadorCelula == 9) {// valor do is_longMethod
 						islong = currentCell.getBooleanCellValue();
 					}
-					if (contadorCelula == 10) {//valor da ferramenta iplasma
+					if (contadorCelula == 10) {// valor da ferramenta iplasma
 						iplasma = currentCell.getBooleanCellValue();
 					}
-					if (contadorCelula == 11) {//valor da ferramenta pmi
+					if (contadorCelula == 11) {// valor da ferramenta pmi
 						pmi = currentCell.getBooleanCellValue();
 					}
 				}
@@ -163,7 +167,81 @@ public class Application {
 		DII = 0;
 		ADCI = 0;
 		ADII = 0;
-	}	
-	
+	}
+
+	public void feature_envy(int ATFDThreshold, String andOr, double LAAThreshold) {
+		try {
+			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));// abre o ficheiro excel
+			Workbook workbook = new XSSFWorkbook(excelFile);
+			Sheet datatypeSheet = workbook.getSheetAt(0);
+			Iterator<Row> iterator = datatypeSheet.iterator();
+			Row currentRow = iterator.next();// iterador de linhas
+
+			List<Method> feature_envy = new ArrayList<Method>();
+			List<Method> nonfeature_envy = new ArrayList<Method>();
+
+			String methodName = "";
+			int atfd = -1;
+			double laa = -1;
+			int methodId = -1;
+
+			while (iterator.hasNext()) {// percorrer todas as linhas do ficheiro
+				currentRow = iterator.next();// iterador de celulas
+
+				int contadorCelula = 0;// contador auxiliar para saber que celula se está a analisar
+				Iterator<Cell> cellIterator = currentRow.iterator();
+
+				while (cellIterator.hasNext()) {// percorrer as celulas de cada linha
+					Cell currentCell = cellIterator.next();// celula a analisar
+					contadorCelula++;
+
+					if (contadorCelula == 1)// obter o ID do metodo
+						methodId = (int) currentCell.getNumericCellValue();
+
+					if (contadorCelula == 4)// obter o nome do metodo
+						methodName = currentCell.getStringCellValue();
+
+					if (contadorCelula == 7)
+						atfd = (int) currentCell.getNumericCellValue();
+
+					if (contadorCelula == 8) {
+						String aux_laa = currentCell.toString();
+						laa = Double.parseDouble(aux_laa);
+
+						if (andOr == "and") {
+
+							if ( atfd > ATFDThreshold && laa < LAAThreshold ) {
+								feature_envy.add(new Method(methodId, methodName));
+							} else {
+								nonfeature_envy.add(new Method(methodId, methodName));
+							}
+						}
+						else {
+							if ( atfd > ATFDThreshold || laa < LAAThreshold ) {
+								feature_envy.add(new Method(methodId, methodName));
+							} else {
+								nonfeature_envy.add(new Method(methodId, methodName));
+							}	
+						}
+					}
+				}
+			}
+
+			for (Method m : feature_envy) {
+				System.out.println(m + "is feature envy");
+			}
+
+			for (Method m : nonfeature_envy) {
+				System.out.println(m + "not feature envy");
+			}
+			workbook.close();
+			gui.receiveOutputFeatureEnvy(feature_envy, nonfeature_envy);
+
+		} catch (FileNotFoundException e) {
+			System.out.println("Erro ao abrir o ficheiro!");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

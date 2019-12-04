@@ -180,9 +180,11 @@ public class GUI {
 			     String optionSelected = (String)cb.getSelectedItem();
 			     if(optionSelected.equals("and")) {
 			    	 //and things
+			    	 
 			     }
 			     if(optionSelected.equals("or")) {
 			    	 //or things
+			    	 
 			     }
 			}
 		});
@@ -205,6 +207,8 @@ public class GUI {
         panel_aux4.add(featureEnvyButton);
         featureEnvyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+//				app.feature_envy(Integer.parseInt(atfd_txt.getText()), "and", Integer.parseInt());
+//				app.feature_envy(ATFDThreshold, "or", LAAThreshold);
 				
 			}
 		});
@@ -308,6 +312,10 @@ public class GUI {
 		DIIOutput.setText("" + DIIValue);
 		ADCIOutput.setText("" + ADCIValue);
 		ADIIOutput.setText("" + ADIIValue);
+	}
+	
+	public void receiveOutputFeatureEnvy(List<Method> feature_envy, List<Method> nonfeature_envy) {
+		
 	}
 
 }
