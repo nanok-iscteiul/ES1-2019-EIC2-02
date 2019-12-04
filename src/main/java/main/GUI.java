@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -42,7 +43,7 @@ public class GUI {
 
 	private void createFrame() {
 
-		frame.setLayout(new BorderLayout());
+		frame.setLayout(new GridLayout(5, 5));
 		addFields();
 
 		frame.setSize(720, 576);
@@ -71,7 +72,7 @@ public class GUI {
 			}
 		});
         
-        frame.add(panel_aux1,BorderLayout.BEFORE_FIRST_LINE);
+        frame.add(panel_aux1);
         //Fim da Parte de cima
        
         //Depois da Parte de cima
@@ -114,7 +115,7 @@ public class GUI {
 				}
 			}
 		});
-		frame.add(panel_aux2, FlowLayout.CENTER);
+		frame.add(panel_aux2);
 		
 		// parte de baixo
 		JPanel panel_aux9 = new JPanel();
@@ -128,7 +129,7 @@ public class GUI {
             }
         });
         
-        frame.add(panel_aux9, BorderLayout.BEFORE_LINE_BEGINS);
+        frame.add(panel_aux9);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 4));
@@ -183,7 +184,7 @@ public class GUI {
 		ADIIOutput.setBorder(border);
 		panel.add(ADIIOutput);
 		
-		frame.add(panel, BorderLayout.AFTER_LAST_LINE);
+		frame.add(panel);
 
 	}
 
