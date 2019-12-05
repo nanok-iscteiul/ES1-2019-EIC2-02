@@ -23,7 +23,7 @@ public class Application {
 	private static int CYCLO_THRESHOLD_IN_USE = CYCLO_THRESHOLD;
 	private int DCI = 0, DII = 0, ADCI = 0, ADII = 0;
 
-	private String FILE_NAME = "C:\\Users\\nicha\\Desktop\\Long-Method.xlsx";// caminho do ficheiro excel
+	private String FILE_NAME;// caminho do ficheiro excel
 
 	private GUI gui;
 
@@ -169,7 +169,7 @@ public class Application {
 		ADII = 0;
 	}
 
-	public void feature_envy(int ATFDThreshold, String andOr, double LAAThreshold) {
+	public void feature_envy(double ATFDThreshold, String andOr, double LAAThreshold) {
 		try {
 			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));// abre o ficheiro excel
 			Workbook workbook = new XSSFWorkbook(excelFile);
@@ -181,7 +181,7 @@ public class Application {
 			List<Method> nonfeature_envy = new ArrayList<Method>();
 
 			String methodName = "";
-			int atfd = -1;
+			double atfd = -1;
 			double laa = -1;
 			int methodId = -1;
 
@@ -202,7 +202,7 @@ public class Application {
 						methodName = currentCell.getStringCellValue();
 
 					if (contadorCelula == 7)
-						atfd = (int) currentCell.getNumericCellValue();
+						atfd = (double) currentCell.getNumericCellValue();
 
 					if (contadorCelula == 8) {
 						String aux_laa = currentCell.toString();
