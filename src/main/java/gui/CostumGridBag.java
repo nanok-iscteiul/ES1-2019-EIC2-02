@@ -1,4 +1,4 @@
-package main;
+package gui;
 
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -7,7 +7,8 @@ import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 
 public class CostumGridBag extends JPanel {
-    GridBagConstraints constraints = new GridBagConstraints();
+	private static final long serialVersionUID = 1L;
+	GridBagConstraints constraints = new GridBagConstraints();
 
     public CostumGridBag(JPanel esquerdo, JPanel direito) {
       setLayout(new GridBagLayout());

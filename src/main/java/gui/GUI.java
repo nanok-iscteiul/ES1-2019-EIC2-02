@@ -1,4 +1,4 @@
-package main;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,6 +31,8 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
+
+import application.Application;
 
 public class GUI {
 

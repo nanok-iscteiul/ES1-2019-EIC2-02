@@ -1,10 +1,12 @@
-package main;
+package application;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -14,14 +16,19 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import gui.GUI;
+
 public class Application {
 
 	private String FILE_NAME;// caminho do ficheiro excel
+	
+	private List<MethodData> methodsData;
 
 	private GUI gui;
 
 	public Application() {
 		gui = new GUI(this);
+		methodsData = new ArrayList<MethodData>();
 	}
 
 	public void setPath(String path) {// definir o caminho do ficheiro excel
