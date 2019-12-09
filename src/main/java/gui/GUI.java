@@ -1,13 +1,9 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -16,7 +12,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -30,9 +25,11 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import application.Application;
+import application.MethodData;
 
 public class GUI {
 
@@ -42,11 +39,10 @@ public class GUI {
 	private JTextField loc;
 	private JTextField cyclo;
 	private JButton longMethod;
-	private JComboBox optionList;
+	private JComboBox<String> optionList;
 	private JTextField laa_txt;
 	private JTextField atfd_txt;
 	private JButton featureEnvyButton;
-	private JButton defectDetection;
 	private JTextField dciIplasma;
 	private JTextField diiIplasma;
 	private JTextField adciIplasma;
@@ -62,7 +58,6 @@ public class GUI {
 	private JButton showFileButton;
 	private DefaultTableModel tableModel;
 	private JLabel definedRules;
-	private CostumGridBag costumGridBag;
 
 	public GUI(Application app) {
 		this.app = app;
@@ -73,10 +68,8 @@ public class GUI {
 	}
 
 	private void createFrame() {
-
-		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.setMinimumSize(new Dimension(1280, 720));
+		frame.setMinimumSize(new Dimension((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth(), 720));
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
@@ -116,10 +109,9 @@ public class GUI {
 					featureEnvyButton.setEnabled(true);
 					longMethod.setEnabled(true);
 					showFileButton.setEnabled(true);
-					tableModel.setRowCount(0);
-					app.fillTable();
+					app.loadFile();
+					fillTable();
 					app.defectDetection();
-					
 				}
 			}
 		});
@@ -205,6 +197,7 @@ public class GUI {
 					int locValue = Integer.parseInt(loc.getText());
 					int cycloValue = Integer.parseInt(cyclo.getText());
 					app.longMethod(locValue,cycloValue);
+					fillLongMethod();
 					app.defectDetectionDefinedRules(0);
 				}
 			}
@@ -250,7 +243,7 @@ public class GUI {
 		botoesFeatureEnvyPanel.add(atfd_txt);
 
 		String[] option = { "and", "or" };
-		optionList = new JComboBox(option);
+		optionList = new JComboBox<String>(option);
 		optionList.setSelectedIndex(1);
 		optionList.setPreferredSize(new Dimension(108, 30));
 		botoesFeatureEnvyPanel.add(optionList);
@@ -289,6 +282,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 				String choice = optionList.getSelectedItem().toString();
 				app.feature_envy(Double.parseDouble(atfd_txt.getText()), choice, Double.parseDouble(laa_txt.getText()));
+				fillFeature_envy();
 				app.defectDetectionDefinedRules(1);
 				
 			}
@@ -425,20 +419,70 @@ public class GUI {
 		
 		final JPanel direito = new JPanel(new GridLayout());
 		direito.setPreferredSize(new Dimension((int)dimension.getWidth()*(2/3), (int)dimension.getHeight()));
-		String[] col = { "MethodId", "LOC", "CYCLO","ATFD", "LAA", "is_long_method", "iPlasma","PMD", 
-				"is_feature_envy", "is_long_method_by_defined_rules",
-				"is_feature_envy_by_defined_rules"};
+		String[] col = { "MethodId", "LOC", "CYCLO","ATFD", "LAA", "is long method", "iPlasma","PMD", 
+				"is feature envy", "is long method by defined rules",
+				"is feature envy by defined rules"};
 		tableModel = new DefaultTableModel(col, 0);
 		JTable table = new JTable(tableModel);
+		for(int i=0;i<5;i++) {
+			table.getColumn(col[i]).setMinWidth(70);
+			table.getColumn(col[i]).setMaxWidth(70);
+		}
+		table.getColumn(col[5]).setMinWidth(100);
+		table.getColumn(col[5]).setMaxWidth(100);
+		table.getColumn(col[6]).setMinWidth(70);
+		table.getColumn(col[6]).setMaxWidth(70);
+		table.getColumn(col[7]).setMinWidth(70);
+		table.getColumn(col[7]).setMaxWidth(70);
+		table.getColumn(col[8]).setMinWidth(140);
+		table.getColumn(col[8]).setMaxWidth(140);
+		table.getColumn(col[9]).setMinWidth(200);
+		table.getColumn(col[9]).setMaxWidth(240);
+		table.getColumn(col[10]).setMinWidth(205);
+		table.getColumn(col[10]).setMaxWidth(205);
+		
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+		
+		for(int i=0;i<col.length;i++) {
+			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+		}
+		
 		table.setEnabled(false);
 	
 		direito.add(new JScrollPane(table));
 		
 		//add à frame
 	
-		frame.setContentPane(new CostumGridBag(esquerdo, direito));
+		frame.setContentPane(new CustomGridBag(esquerdo, direito));
 		
 	}
+	
+	private void fillTable() {
+		tableModel.setRowCount(0);
+		for( MethodData m : app.getMethodsData()) {
+			String[] aux = { String.valueOf(m.getMethodId()),String.valueOf(m.getLoc()),
+					String.valueOf(m.getCyclo()), String.valueOf(m.getAtfd()), 
+					String.valueOf(m.getLaa()),String.valueOf(m.getIs_long_method()), 
+					String.valueOf(m.getIplasma()), String.valueOf(m.getPmd()),
+					String.valueOf(m.getIs_feature_envy()) };
+			tableModel.addRow(aux);
+		}
+	}
+	
+	private void fillLongMethod() {
+		for(MethodData m : app.getMethodsData()) {
+			tableModel.setValueAt(m.getIs_long_method_by_rules(), m.getMethodId()-1, 9);
+		}
+	}
+	
+	private void fillFeature_envy() {
+		for(MethodData m : app.getMethodsData()) {
+			tableModel.setValueAt(m.getIs_feature_envy_by_rules(), m.getMethodId()-1, 10);
+		}
+	}
+	
+	
 
 	public void receiveOutputDefectDetection(int [] countersIPlasma, int [] countersPmd) {
 		dciIplasma.setText("" + countersIPlasma[0]);

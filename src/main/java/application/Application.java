@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.table.DefaultTableModel;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,7 +19,7 @@ import gui.GUI;
 public class Application {
 
 	private String FILE_NAME;// caminho do ficheiro excel
-	
+
 	private List<MethodData> methodsData;
 
 	private GUI gui;
@@ -36,113 +34,78 @@ public class Application {
 	}
 
 	public void longMethod(int locThreshold, int cycloThreshold) {
-		DefaultTableModel tableModel = gui.getTableModel();
-		try {
-			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));// abre o ficheiro excel
-			Workbook workbook = new XSSFWorkbook(excelFile);
-			Sheet datatypeSheet = workbook.getSheetAt(0);
-			Iterator<Row> iterator = datatypeSheet.iterator();
-			Row currentRow = iterator.next();// iterador de linhas
-
-			int loc = -1, cyclo = -1;
-			int tableRowIterator = 0;
-			boolean is_long_method_by_rules = false;
-
-			while (iterator.hasNext()) {// percorrer todas as linhas do ficheiro
-				currentRow = iterator.next();// iterador de celulas
-
-				int contadorCelula = 0;// contador auxiliar para saber que celula se está a analisar
-				Iterator<Cell> cellIterator = currentRow.iterator();
-
-				while (cellIterator.hasNext()) {// percorrer as celulas de cada linha
-					Cell currentCell = cellIterator.next();// celula a analisar
-					contadorCelula++;
-
-					if (contadorCelula == 5)// obter o numero de linhas de codigo do metodo
-						loc = (int) currentCell.getNumericCellValue();
-
-					if (contadorCelula == 6) {// obter a complexidade ciclomatica e inserir o metodo na lista adequada
-						cyclo = (int) currentCell.getNumericCellValue();
-
-						if (locThreshold < loc && cycloThreshold < cyclo) {
-							is_long_method_by_rules = true;// no caso de ser longMethod para as
-															// metricas indicadas
-						} else {
-							is_long_method_by_rules = false;// no caso de não ser longMethod para
-															// as metricas indicadas.
-						}
-					}
-				}
-				tableModel.setValueAt(is_long_method_by_rules, tableRowIterator, 9);
-				tableRowIterator++;
+		for (MethodData m : methodsData) {
+			if (m.getLoc() > locThreshold && m.getCyclo() > cycloThreshold) {
+				m.setIs_long_method_by_rules(true);
+			} else {
+				m.setIs_long_method_by_rules(false);
 			}
-			workbook.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("Erro ao abrir o ficheiro!");
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
+	public void feature_envy(double atfdThreshold, String andOr, double laaThreshold) {
+		for (MethodData m : methodsData) {
+			if (andOr == "and") {
+				if (m.getAtfd() > atfdThreshold && m.getLaa() < laaThreshold) {
+					m.setIs_feature_envy_by_rules(true);
+				} else {
+					m.setIs_feature_envy_by_rules(false);
+				}
+			} else {
+				if (m.getAtfd() > atfdThreshold || m.getLaa() < laaThreshold) {
+					m.setIs_feature_envy_by_rules(true);
+				} else {
+					m.setIs_feature_envy_by_rules(false);
+				}
+			}
+		}
+	}
+	
 	public void defectDetection() {
-		int [] countersIPlasma = {0,0,0,0};
-		int [] countersPmd = {0,0,0,0};
-		try {
-			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));// abrir o ficheiro excel
-			Workbook workbook = new XSSFWorkbook(excelFile);
-			Sheet datatypeSheet = workbook.getSheetAt(0);
-			Iterator<Row> iterator = datatypeSheet.iterator();
-			Row currentRow = iterator.next();// iterador de linhas
-			while (iterator.hasNext()) {// percorer todas as linhas
-				int contadorCelula = 0;
-				boolean islong = false, iplasma = false, pmi = false;
-				currentRow = iterator.next();
-				Iterator<Cell> cellIterator = currentRow.iterator();// iterador de celulas
+		int[] countersIPlasma = { 0, 0, 0, 0 };
+		int[] countersPmd = { 0, 0, 0, 0 };
 
-				while (cellIterator.hasNext()) {// percorer todas as celulas de cada linha
-					Cell currentCell = cellIterator.next();// celula a analisar
-					contadorCelula++;
-
-					if (contadorCelula == 9) {// valor do is_longMethod
-						islong = currentCell.getBooleanCellValue();
-					}
-					if (contadorCelula == 10) {// valor da ferramenta iplasma
-						iplasma = currentCell.getBooleanCellValue();
-					}
-					if (contadorCelula == 11) {// valor da ferramenta pmi
-						pmi = currentCell.getBooleanCellValue();
-					}
-				}
-				countersIPlasma = checkErrorIdentifiers(islong,iplasma,countersIPlasma);
-				countersPmd = checkErrorIdentifiers(islong, pmi, countersPmd);
-			}
-			gui.receiveOutputDefectDetection(countersIPlasma, countersPmd);
-			workbook.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("Erro ao abrir o ficheiro!");
-		} catch (IOException e) {
-			e.printStackTrace();
+		for (MethodData m : methodsData) {
+			countersIPlasma = checkErrorIdentifiers(m.getIs_long_method(), m.getIplasma(), countersIPlasma);
+			countersPmd = checkErrorIdentifiers(m.getIs_long_method(), m.getPmd(), countersPmd);
 		}
+		gui.receiveOutputDefectDetection(countersIPlasma, countersPmd);
 	}
 
-	private int [] checkErrorIdentifiers(boolean islong, boolean iplasmaOrPmd,int [] counters) {
-		if (islong == true && iplasmaOrPmd == true ) {//DCI
+	public void defectDetectionDefinedRules(int number) {// 0-longMethod; 1-feature_envy
+		int[] counters = { 0, 0, 0, 0 };
+		for (MethodData m : methodsData) {
+			if (number == 0) {// para long method
+				counters = checkErrorIdentifiers(m.getIs_long_method(), m.getIs_long_method_by_rules(), counters);
+			} else {// para feature_envy
+				counters = checkErrorIdentifiers(m.getIs_feature_envy(), m.getIs_feature_envy_by_rules(), counters);
+			}
+		}
+		if (number == 0) {
+			gui.receiveOutputDefectDetectionDefinedRules("Long Method", counters);
+		} else {
+			gui.receiveOutputDefectDetectionDefinedRules("Feature Envy", counters);
+		}
+	}
+	
+	private int[] checkErrorIdentifiers(boolean islong, boolean iplasmaOrPmd, int[] counters) {
+		if (islong == true && iplasmaOrPmd == true) {// DCI
 			counters[0]++;
 		}
-		if (islong == false && iplasmaOrPmd == true ) {//DII
+		if (islong == false && iplasmaOrPmd == true) {// DII
 			counters[1]++;
 		}
-		if (islong == false && iplasmaOrPmd == false ) {//ADCI
+		if (islong == false && iplasmaOrPmd == false) {// ADCI
 			counters[2]++;
 		}
-		if (islong == true && iplasmaOrPmd == false ) {//ADII
+		if (islong == true && iplasmaOrPmd == false) {// ADII
 			counters[3]++;
 		}
 		return counters;
 	}
-
-	public void feature_envy(double ATFDThreshold, String andOr, double LAAThreshold) {
-		DefaultTableModel tableModel = gui.getTableModel();
+	
+	public void loadFile() {
+		methodsData.clear();// limpar o vetor anterior sempre que se carrega um novo ficheiro
 		try {
 			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));// abre o ficheiro excel
 			Workbook workbook = new XSSFWorkbook(excelFile);
@@ -150,73 +113,10 @@ public class Application {
 			Iterator<Row> iterator = datatypeSheet.iterator();
 			Row currentRow = iterator.next();// iterador de linhas
 
-			double atfd = -1;
-			double laa = -1;
-			int tableRowIterator = 0;
-			boolean is_feature_envy_by_rules = false;
-
-			while (iterator.hasNext()) {// percorrer todas as linhas do ficheiro
-				currentRow = iterator.next();// iterador de celulas
-
-				int contadorCelula = 0;// contador auxiliar para saber que celula se está a analisar
-				Iterator<Cell> cellIterator = currentRow.iterator();
-
-				while (cellIterator.hasNext()) {// percorrer as celulas de cada linha
-					Cell currentCell = cellIterator.next();// celula a analisar
-					contadorCelula++;
-
-					if (contadorCelula == 7)
-						atfd = (double) currentCell.getNumericCellValue();
-
-					if (contadorCelula == 8) {
-						String aux_laa = currentCell.toString();
-						laa = Double.parseDouble(aux_laa);
-
-						if (andOr == "and") {
-
-							if (atfd > ATFDThreshold && laa < LAAThreshold) {
-								is_feature_envy_by_rules = true;
-							} else {
-								is_feature_envy_by_rules = false;
-							}
-						} else {
-							if (atfd > ATFDThreshold || laa < LAAThreshold) {
-								is_feature_envy_by_rules = true;
-							} else {
-								is_feature_envy_by_rules = false;
-							}
-						}
-					}
-				}
-				tableModel.setValueAt(is_feature_envy_by_rules,tableRowIterator,10);
-				tableRowIterator++;
-			}
-			workbook.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("Erro ao abrir o ficheiro!");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void fillTable() {
-		DefaultTableModel tableModel = gui.getTableModel();
-		try {
-			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));// abre o ficheiro excel
-			Workbook workbook = new XSSFWorkbook(excelFile);
-			Sheet datatypeSheet = workbook.getSheetAt(0);
-			Iterator<Row> iterator = datatypeSheet.iterator();
-			Row currentRow = iterator.next();// iterador de linhas
-
-			int methodId = -1;
-			int loc = -1;
-			int cyclo = -1;
-			double atfd = -1;
-			double laa = -1;
-			boolean is_long_method = false;
-			boolean iPlasma = false;
-			boolean pmd = false;
-			boolean is_feature_envy = false;
+			int methodId = -1, loc = -1, cyclo = -1;
+			double atfd = -1, laa = -1;
+			boolean is_long_method = false, iPlasma = false, pmd = false, is_feature_envy = false;
+			String packageName = "", className = "", methodName = "";
 
 			while (iterator.hasNext()) {// percorrer todas as linhas do ficheiro
 				currentRow = iterator.next();// iterador de celulas
@@ -231,37 +131,45 @@ public class Application {
 					if (contadorCelula == 1)// obter o ID do metodo
 						methodId = (int) currentCell.getNumericCellValue();
 
+					if (contadorCelula == 2)// obter o package do metodo
+						packageName = currentCell.getStringCellValue();
+
+					if (contadorCelula == 3)// obter a class do metodo
+						className = currentCell.getStringCellValue();
+
+					if (contadorCelula == 4)// obter o nome do metodo
+						methodName = currentCell.getStringCellValue();
+
 					if (contadorCelula == 5)// loc
 						loc = (int) currentCell.getNumericCellValue();
 
-					if (contadorCelula == 6)
+					if (contadorCelula == 6)// cyclo
 						cyclo = (int) currentCell.getNumericCellValue();
 
-					if (contadorCelula == 7)
+					if (contadorCelula == 7)// atfd
 						atfd = (double) currentCell.getNumericCellValue();
 
-					if (contadorCelula == 8) {
+					if (contadorCelula == 8) {// laa
 						String aux_laa = currentCell.toString();
 						laa = Double.parseDouble(aux_laa);
 					}
 
-					if (contadorCelula == 9)
+					if (contadorCelula == 9)// valor do is_long_method
 						is_long_method = currentCell.getBooleanCellValue();
 
-					if (contadorCelula == 10)
+					if (contadorCelula == 10)// valor do iplasma
 						iPlasma = currentCell.getBooleanCellValue();
 
-					if (contadorCelula == 11)
+					if (contadorCelula == 11)// valor do pmd
 						pmd = currentCell.getBooleanCellValue();
 
-					if (contadorCelula == 12)
+					if (contadorCelula == 12)// valor do feature_envy
 						is_feature_envy = currentCell.getBooleanCellValue();
 
 				}
-				String[] aux = { "" + methodId, "" + loc, "" + cyclo, "" + (int) atfd, "" + laa,
-						String.valueOf(is_long_method), String.valueOf(iPlasma), String.valueOf(pmd),
-						String.valueOf(is_feature_envy) };
-				tableModel.addRow(aux);
+
+				methodsData.add(new MethodData(methodId, packageName, className, methodName, loc, cyclo, atfd, laa,
+						is_long_method, is_feature_envy, iPlasma, pmd));// adicionar o metodo ao vetor
 			}
 			workbook.close();
 
@@ -272,77 +180,11 @@ public class Application {
 		}
 	}
 	
-	public void defectDetectionDefinedRules(int number) {
-		int [] counters = {0,0,0,0};
-		DefaultTableModel tableModel = gui.getTableModel();
-		try {
-			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));// abrir o ficheiro excel
-			Workbook workbook = new XSSFWorkbook(excelFile);
-			Sheet datatypeSheet = workbook.getSheetAt(0);
-			Iterator<Row> iterator = datatypeSheet.iterator();
-			Row currentRow = iterator.next();// iterador de linhas
-			
-			int tableRowIterator = 0;
-			boolean excelIsLongMethod = false;
-			boolean tableIsLongMethod = false;
-			boolean excelIsFeatureEnvy = false;
-			boolean tableIsFeatureEnvy = false;
-			
-			while (iterator.hasNext()) {// percorer todas as linhas
-				int contadorCelula = 0;
-				
-				currentRow = iterator.next();
-				Iterator<Cell> cellIterator = currentRow.iterator();// iterador de celulas
-
-				while (cellIterator.hasNext()) {// percorer todas as celulas de cada linha
-					Cell currentCell = cellIterator.next();// celula a analisar
-					contadorCelula++;
-
-					if (contadorCelula == 9 && number == 0) {// valor do is_longMethod
-						excelIsLongMethod = currentCell.getBooleanCellValue();
-					}
-					
-					if (contadorCelula == 12 && number == 1) {
-						excelIsFeatureEnvy = currentCell.getBooleanCellValue();
-					}
-					
-				}
-				String aux;
-				if( number == 0) {//para long method
-					aux = tableModel.getValueAt(tableRowIterator, 9).toString();
-					if( aux == "false") {
-						tableIsLongMethod = false;
-					}else {
-						tableIsLongMethod = true;
-					}
-					counters=checkErrorIdentifiers(excelIsLongMethod, tableIsLongMethod, counters);
-				}else {//para feature_envy
-					aux = tableModel.getValueAt(tableRowIterator, 10).toString();
-					if( aux == "false") {
-						tableIsFeatureEnvy = false;
-					}else {
-						tableIsFeatureEnvy = true;
-					}
-					counters=checkErrorIdentifiers(excelIsFeatureEnvy, tableIsFeatureEnvy, counters);
-				}
-				tableRowIterator++;
-			}
-			if( number == 0){
-				gui.receiveOutputDefectDetectionDefinedRules("Long Method", counters);
-			}
-			else {
-				gui.receiveOutputDefectDetectionDefinedRules("Feature Envy", counters);
-			}
-			workbook.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("Erro ao abrir o ficheiro!");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public String getFileName() {
 		return FILE_NAME;
 	}
-
+	
+	public List<MethodData> getMethodsData(){
+		return methodsData;
+	}
 }
