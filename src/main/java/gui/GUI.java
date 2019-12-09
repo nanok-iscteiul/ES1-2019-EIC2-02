@@ -482,8 +482,6 @@ public class GUI {
 		}
 	}
 	
-	
-
 	public void receiveOutputDefectDetection(int [] countersIPlasma, int [] countersPmd) {
 		dciIplasma.setText("" + countersIPlasma[0]);
 		diiIplasma.setText("" + countersIPlasma[1]);
@@ -503,10 +501,6 @@ public class GUI {
 		diiDefinedRules.setText(""+ counters[1]);
 		adciDefinedRules.setText(""+ counters[2]);
 		adiiDefinedRules.setText(""+ counters[3]);
-	}
-	
-	public DefaultTableModel getTableModel() {
-		return tableModel;
 	}
 
 }
