@@ -19,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -69,34 +70,33 @@ public class GUI {
 
 	private void createFrame() {
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.setMinimumSize(new Dimension((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth(), 720));
+		frame.setMinimumSize(new Dimension((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(), 720));
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
-	private void addFields() {
+	private void addFields() {// adiciona os paineis, butoes, labels
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-		
-		//Painel esquerdo
-		final JPanel esquerdo = new JPanel(new GridLayout(4,1));
-		//Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-		esquerdo.setPreferredSize(new Dimension((int)dimension.getWidth()*(1/3), (int)dimension.getHeight()));
-		//painel esquerdo 1
-		JPanel esquerdo1 = new JPanel(new GridLayout(2,1));
-		//painel dataFile
-		JPanel dataFile = new JPanel(new GridLayout(1,2));
+
+		// Painel esquerdo
+		final JPanel esquerdo = new JPanel(new GridLayout(4, 1));
+		esquerdo.setPreferredSize(new Dimension((int) dimension.getWidth() * (1 / 3), (int) dimension.getHeight()));
+		// painel esquerdo 1
+		JPanel esquerdo1 = new JPanel(new GridLayout(2, 1));
+		// painel dataFile
+		JPanel dataFile = new JPanel(new GridLayout(1, 2));
 		JLabel dFText = new JLabel("Data File:");
-		dFText.setFont(new Font("Arial", Font.BOLD,20));
-		
+		dFText.setFont(new Font("Arial", Font.BOLD, 20));
+
 		dataFile.add(dFText);
-		
-		//painel load/show
+
+		// painel load/show
 		JPanel fileChoser = new JPanel();
-		fileChoser.setLayout(new GridLayout(1,3));
-		
+		fileChoser.setLayout(new GridLayout(1, 3));
+
 		filePath = new JTextField("Please Load An Excel file");
 		filePath.setHorizontalAlignment(JTextField.CENTER);
 		filePath.setEditable(false);
-		
+
 		JButton loadFileButton = new JButton("Load File");
 		loadFileButton.setHorizontalAlignment(JButton.CENTER);
 		loadFileButton.setPreferredSize(new Dimension(300, 25));
@@ -104,14 +104,20 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
 				if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-					app.setPath(chooser.getSelectedFile().getAbsolutePath());
-					filePath.setText(chooser.getSelectedFile().getName());
-					featureEnvyButton.setEnabled(true);
-					longMethod.setEnabled(true);
-					showFileButton.setEnabled(true);
-					app.loadFile();
-					fillTable();
-					app.defectDetection();
+					if (chooser.getSelectedFile().getAbsolutePath().endsWith(".xlsx")
+							|| chooser.getSelectedFile().getAbsolutePath().endsWith(".xls")) {
+						app.setPath(chooser.getSelectedFile().getAbsolutePath());
+						filePath.setText(chooser.getSelectedFile().getName());
+						featureEnvyButton.setEnabled(true);
+						longMethod.setEnabled(true);
+						showFileButton.setEnabled(true);
+						clearDefectDetectionTable();
+						app.loadFile();
+						fillTable();
+						app.defectDetection();
+					}else {
+						JOptionPane.showMessageDialog(null, "Escolha um ficheiro excel", "Erro ao abrir ficheiro", JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
 			}
 		});
@@ -122,33 +128,33 @@ public class GUI {
 		showFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-		            Desktop.getDesktop().open(new File(app.getFileName()));
-		        } catch (IOException e1) {
-		            System.out.println("Erro ao abrir ficheiro Excel");
-		        }
+					Desktop.getDesktop().open(new File(app.getFileName()));
+				} catch (IOException e1) {
+					System.out.println("Erro ao abrir ficheiro Excel");
+				}
 			}
 		});
-		
+
 		fileChoser.add(filePath);
 		fileChoser.add(loadFileButton);
 		fileChoser.add(showFileButton);
-	
+
 		esquerdo1.add(dataFile);
 		esquerdo1.add(fileChoser);
-		//painel esquerdo 2
-		JPanel esquerdo2 = new JPanel(new GridLayout(2,1));
-		
-		//Label longmethod
-		JPanel longMethodPanel = new JPanel(new GridLayout(1,2));
+		// painel esquerdo 2
+		JPanel esquerdo2 = new JPanel(new GridLayout(2, 1));
+
+		// Label longmethod
+		JPanel longMethodPanel = new JPanel(new GridLayout(1, 2));
 		JLabel longText = new JLabel("Long Method:");
-		longText.setFont(new Font("Arial", Font.BOLD,20));
+		longText.setFont(new Font("Arial", Font.BOLD, 20));
 		longMethodPanel.add(longText);
-		
-		//painel botoesLongMethod
-		JPanel botoesLongMethodPanel = new JPanel(new GridLayout(1,5));
-		
+
+		// painel botoesLongMethod
+		JPanel botoesLongMethodPanel = new JPanel(new GridLayout(1, 5));
+
 		Border border = BorderFactory.createLineBorder(Color.BLUE, 1);
-		
+
 		JLabel linesOfCode = new JLabel("Lines of code");
 		linesOfCode.setHorizontalAlignment(JLabel.CENTER);
 		linesOfCode.setBorder(border);
@@ -167,7 +173,7 @@ public class GUI {
 				}
 			}
 		});
-		
+
 		JLabel cyclomaticComplexity = new JLabel("Cyclomatic Complexity");
 		cyclomaticComplexity.setHorizontalAlignment(JLabel.CENTER);
 		cyclomaticComplexity.setBorder(border);
@@ -196,7 +202,7 @@ public class GUI {
 				if (loc.getText() != "" && cyclo.getText() != "") {
 					int locValue = Integer.parseInt(loc.getText());
 					int cycloValue = Integer.parseInt(cyclo.getText());
-					app.longMethod(locValue,cycloValue);
+					app.longMethod(locValue, cycloValue);
 					fillLongMethod();
 					app.defectDetectionDefinedRules(0);
 				}
@@ -205,17 +211,16 @@ public class GUI {
 		esquerdo2.add(longMethodPanel);
 		esquerdo2.add(botoesLongMethodPanel);
 		// fim painel esquerdo 2
-		
-			
-		//painel esquerdo 3
-		
-		JPanel esquerdo3 = new JPanel(new GridLayout(2,1));
-		JPanel featureEnvyPanel = new JPanel(new GridLayout(1,2));
+
+		// painel esquerdo 3
+
+		JPanel esquerdo3 = new JPanel(new GridLayout(2, 1));
+		JPanel featureEnvyPanel = new JPanel(new GridLayout(1, 2));
 		JLabel featureEnvyLabel = new JLabel("Feature Envy:");
-		featureEnvyLabel.setFont(new Font("Arial", Font.BOLD,20));
+		featureEnvyLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		featureEnvyPanel.add(featureEnvyLabel);
-		
-		JPanel botoesFeatureEnvyPanel = new JPanel(new GridLayout(1,6));
+
+		JPanel botoesFeatureEnvyPanel = new JPanel(new GridLayout(1, 6));
 
 		JLabel atfd = new JLabel("ATFD >");
 		atfd.setHorizontalAlignment(JLabel.CENTER);
@@ -284,26 +289,26 @@ public class GUI {
 				app.feature_envy(Double.parseDouble(atfd_txt.getText()), choice, Double.parseDouble(laa_txt.getText()));
 				fillFeature_envy();
 				app.defectDetectionDefinedRules(1);
-				
+
 			}
 		});
-		
+
 		esquerdo3.add(featureEnvyPanel);
 		esquerdo3.add(botoesFeatureEnvyPanel);
-		
-		//painel esquerdo 4
-		JPanel esquerdo4 = new JPanel(new GridLayout(2,1));
-		JPanel qualityIndicatorPanel = new JPanel(new GridLayout(1,2));
+
+		// painel esquerdo 4
+		JPanel esquerdo4 = new JPanel(new GridLayout(2, 1));
+		JPanel qualityIndicatorPanel = new JPanel(new GridLayout(1, 2));
 		JLabel qualityIndicatorLabel = new JLabel("Quality indicators:");
-		qualityIndicatorLabel.setFont(new Font("Arial", Font.BOLD,20));
+		qualityIndicatorLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		qualityIndicatorPanel.add(qualityIndicatorLabel);
-		
-		JPanel indicatorsTable = new JPanel(new GridLayout(0,5));
+
+		JPanel indicatorsTable = new JPanel(new GridLayout(0, 5));
 		JLabel blank = new JLabel("");
 		blank.setHorizontalAlignment(JTextField.CENTER);
 		blank.setBorder(border);
 		indicatorsTable.add(blank);
-		
+
 		JLabel dci = new JLabel("DCI");
 		dci.setHorizontalAlignment(JTextField.CENTER);
 		dci.setBorder(border);
@@ -324,19 +329,19 @@ public class GUI {
 		iplasma.setHorizontalAlignment(JTextField.CENTER);
 		iplasma.setBorder(border);
 		indicatorsTable.add(iplasma);
-		
+
 		dciIplasma = new JTextField("-");
 		dciIplasma.setHorizontalAlignment(JTextField.CENTER);
 		dciIplasma.setEditable(false);
 		dciIplasma.setBorder(border);
 		indicatorsTable.add(dciIplasma);
-		
+
 		diiIplasma = new JTextField("-");
 		diiIplasma.setHorizontalAlignment(JTextField.CENTER);
 		diiIplasma.setEditable(false);
 		diiIplasma.setBorder(border);
 		indicatorsTable.add(diiIplasma);
-		
+
 		adciIplasma = new JTextField("-");
 		adciIplasma.setHorizontalAlignment(JTextField.CENTER);
 		adciIplasma.setEditable(false);
@@ -348,24 +353,24 @@ public class GUI {
 		adiiIplasma.setEditable(false);
 		adiiIplasma.setBorder(border);
 		indicatorsTable.add(adiiIplasma);
-		
+
 		JLabel pmd = new JLabel("PMD");
 		pmd.setHorizontalAlignment(JTextField.CENTER);
 		pmd.setBorder(border);
 		indicatorsTable.add(pmd);
-		
+
 		dciPmd = new JTextField("-");
 		dciPmd.setHorizontalAlignment(JTextField.CENTER);
 		dciPmd.setEditable(false);
 		dciPmd.setBorder(border);
 		indicatorsTable.add(dciPmd);
-		
+
 		diiPmd = new JTextField("-");
 		diiPmd.setHorizontalAlignment(JTextField.CENTER);
 		diiPmd.setEditable(false);
 		diiPmd.setBorder(border);
 		indicatorsTable.add(diiPmd);
-		
+
 		adciPmd = new JTextField("-");
 		adciPmd.setHorizontalAlignment(JTextField.CENTER);
 		adciPmd.setEditable(false);
@@ -377,24 +382,24 @@ public class GUI {
 		adiiPmd.setEditable(false);
 		adiiPmd.setBorder(border);
 		indicatorsTable.add(adiiPmd);
-		
+
 		definedRules = new JLabel("Defined Rules");
 		definedRules.setHorizontalAlignment(JTextField.CENTER);
 		definedRules.setBorder(border);
 		indicatorsTable.add(definedRules);
-		
+
 		dciDefinedRules = new JTextField("-");
 		dciDefinedRules.setHorizontalAlignment(JTextField.CENTER);
 		dciDefinedRules.setEditable(false);
 		dciDefinedRules.setBorder(border);
 		indicatorsTable.add(dciDefinedRules);
-		
+
 		diiDefinedRules = new JTextField("-");
 		diiDefinedRules.setHorizontalAlignment(JTextField.CENTER);
 		diiDefinedRules.setEditable(false);
 		diiDefinedRules.setBorder(border);
 		indicatorsTable.add(diiDefinedRules);
-		
+
 		adciDefinedRules = new JTextField("-");
 		adciDefinedRules.setHorizontalAlignment(JTextField.CENTER);
 		adciDefinedRules.setEditable(false);
@@ -405,26 +410,25 @@ public class GUI {
 		adiiDefinedRules.setHorizontalAlignment(JTextField.CENTER);
 		adiiDefinedRules.setEditable(false);
 		adiiDefinedRules.setBorder(border);
-		indicatorsTable.add(adiiDefinedRules);		
-		
+		indicatorsTable.add(adiiDefinedRules);
+
 		esquerdo4.add(qualityIndicatorPanel);
 		esquerdo4.add(indicatorsTable);
-		
+
 		esquerdo.add(esquerdo1);
 		esquerdo.add(esquerdo2);
 		esquerdo.add(esquerdo3);
 		esquerdo.add(esquerdo4);
-		//Fim de painel Esquerdo
-		//Painel direito
-		
+		// Fim de painel Esquerdo
+		// Painel direito
+
 		final JPanel direito = new JPanel(new GridLayout());
-		direito.setPreferredSize(new Dimension((int)dimension.getWidth()*(2/3), (int)dimension.getHeight()));
-		String[] col = { "MethodId", "LOC", "CYCLO","ATFD", "LAA", "is long method", "iPlasma","PMD", 
-				"is feature envy", "is long method by defined rules",
-				"is feature envy by defined rules"};
+		direito.setPreferredSize(new Dimension((int) dimension.getWidth() * (2 / 3), (int) dimension.getHeight()));
+		String[] col = { "MethodId", "LOC", "CYCLO", "ATFD", "LAA", "is long method", "iPlasma", "PMD",
+				"is feature envy", "is long method by defined rules", "is feature envy by defined rules" };
 		tableModel = new DefaultTableModel(col, 0);
 		JTable table = new JTable(tableModel);
-		for(int i=0;i<5;i++) {
+		for (int i = 0; i < 5; i++) {// tamanhos das colunas
 			table.getColumn(col[i]).setMinWidth(70);
 			table.getColumn(col[i]).setMaxWidth(70);
 		}
@@ -440,67 +444,85 @@ public class GUI {
 		table.getColumn(col[9]).setMaxWidth(240);
 		table.getColumn(col[10]).setMinWidth(205);
 		table.getColumn(col[10]).setMaxWidth(205);
-		
+
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
-		
-		for(int i=0;i<col.length;i++) {
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+
+		for (int i = 0; i < col.length; i++) {
 			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
-		
+
 		table.setEnabled(false);
-	
+
 		direito.add(new JScrollPane(table));
-		
-		//add à frame
-	
+
+		// add à frame
+
 		frame.setContentPane(new CustomGridBag(esquerdo, direito));
-		
+
 	}
-	
-	private void fillTable() {
+
+	public void fillTable() {// preencher a tabela de acordo com o ficheiro
 		tableModel.setRowCount(0);
-		for( MethodData m : app.getMethodsData()) {
-			String[] aux = { String.valueOf(m.getMethodId()),String.valueOf(m.getLoc()),
-					String.valueOf(m.getCyclo()), String.valueOf(m.getAtfd()), 
-					String.valueOf(m.getLaa()),String.valueOf(m.getIs_long_method()), 
-					String.valueOf(m.getIplasma()), String.valueOf(m.getPmd()),
-					String.valueOf(m.getIs_feature_envy()) };
+		for (MethodData m : app.getMethodsData()) {
+			Object[] aux = { m.getMethodId(), m.getLoc(), m.getCyclo(), m.getAtfd(), m.getLaa(), m.getIs_long_method(),
+					m.getIplasma(), m.getPmd(), m.getIs_feature_envy() };
 			tableModel.addRow(aux);
 		}
 	}
-	
-	private void fillLongMethod() {
-		for(MethodData m : app.getMethodsData()) {
-			tableModel.setValueAt(m.getIs_long_method_by_rules(), m.getMethodId()-1, 9);
+
+	private void fillLongMethod() {// preencher a coluna do is Long method
+		for (MethodData m : app.getMethodsData()) {
+			tableModel.setValueAt(m.getIs_long_method_by_rules(), m.getMethodId() - 1, 9);
 		}
 	}
-	
-	private void fillFeature_envy() {
-		for(MethodData m : app.getMethodsData()) {
-			tableModel.setValueAt(m.getIs_feature_envy_by_rules(), m.getMethodId()-1, 10);
+
+	private void fillFeature_envy() {// preencher a coluna do is feature envy
+		for (MethodData m : app.getMethodsData()) {
+			tableModel.setValueAt(m.getIs_feature_envy_by_rules(), m.getMethodId() - 1, 10);
 		}
 	}
-	
-	public void receiveOutputDefectDetection(int [] countersIPlasma, int [] countersPmd) {
+
+	public void receiveOutputDefectDetection(int[] countersIPlasma, int[] countersPmd) {// receber output da detecao de
+																						// defeitos
 		dciIplasma.setText("" + countersIPlasma[0]);
 		diiIplasma.setText("" + countersIPlasma[1]);
 		adciIplasma.setText("" + countersIPlasma[2]);
 		adiiIplasma.setText("" + countersIPlasma[3]);
-		
-		dciPmd.setText(""+ countersPmd[0]);
-		diiPmd.setText(""+ countersPmd[1]);
-		adciPmd.setText(""+ countersPmd[2]);
-		adiiPmd.setText(""+ countersPmd[3]);
+
+		dciPmd.setText("" + countersPmd[0]);
+		diiPmd.setText("" + countersPmd[1]);
+		adciPmd.setText("" + countersPmd[2]);
+		adiiPmd.setText("" + countersPmd[3]);
 	}
-	
-	public void receiveOutputDefectDetectionDefinedRules(String origem,int [] counters) {
+
+	public void receiveOutputDefectDetectionDefinedRules(String origem, int[] counters) {// receber e colocar na GUI o
+																							// resultado das regras
+																							// definidas
 		definedRules.setText(origem);
-		
-		dciDefinedRules.setText(""+ counters[0]);
-		diiDefinedRules.setText(""+ counters[1]);
-		adciDefinedRules.setText(""+ counters[2]);
-		adiiDefinedRules.setText(""+ counters[3]);
+
+		dciDefinedRules.setText("" + counters[0]);
+		diiDefinedRules.setText("" + counters[1]);
+		adciDefinedRules.setText("" + counters[2]);
+		adiiDefinedRules.setText("" + counters[3]);
+	}
+
+	public void clearDefectDetectionTable() {// quando é carregado um novo ficheiro tiram-se os resultados anteriores
+		dciIplasma.setText("-");
+		diiIplasma.setText("-");
+		adciIplasma.setText("-");
+		adiiIplasma.setText("-");
+
+		dciPmd.setText("-");
+		diiPmd.setText("-");
+		adciPmd.setText("-");
+		adiiPmd.setText("-");
+
+		dciDefinedRules.setText("-");
+		diiDefinedRules.setText("-");
+		adciDefinedRules.setText("-");
+		adiiDefinedRules.setText("-");
+
 	}
 
 }

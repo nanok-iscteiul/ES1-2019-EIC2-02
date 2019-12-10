@@ -24,7 +24,7 @@ public class CustomGridBag extends JPanel {
 
 	}
 
-	void addGB(Component component, int x, int y) {
+	public void addGB(Component component, int x, int y) {
 		constraints.gridx = x;
 		constraints.gridy = y;
 		add(component, constraints);
