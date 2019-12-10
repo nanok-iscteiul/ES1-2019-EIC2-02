@@ -1,10 +1,14 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -66,40 +71,51 @@ public class GUI {
 		createFrame();
 		addFields();
 		frame.setVisible(true);
+		frame.setResizable(false);
 	}
 
 	private void createFrame() {
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.setMinimumSize(new Dimension((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(), 720));
+		frame.setMinimumSize(new Dimension((int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth(),
+				(int)GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight()));
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
 	private void addFields() {// adiciona os paineis, butoes, labels
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
 
 		// Painel esquerdo
 		final JPanel esquerdo = new JPanel(new GridLayout(4, 1));
 		esquerdo.setPreferredSize(new Dimension((int) dimension.getWidth() * (1 / 3), (int) dimension.getHeight()));
 		// painel esquerdo 1
-		JPanel esquerdo1 = new JPanel(new GridLayout(2, 1));
+		JPanel esquerdo1 = new JPanel(new FlowLayout());
+		esquerdo1.setBorder(raisedbevel);
 		// painel dataFile
-		JPanel dataFile = new JPanel(new GridLayout(1, 2));
-		JLabel dFText = new JLabel("Data File:");
-		dFText.setFont(new Font("Arial", Font.BOLD, 20));
+		JPanel dataFile = new JPanel();
+		JLabel dFText = new JLabel("Data File:", SwingConstants.CENTER);
+		dFText.setFont(new Font("Arial", Font.BOLD, 45));
 
 		dataFile.add(dFText);
+		dataFile.setPreferredSize(new Dimension(450,70));
+		//panel pathficheiro
+		
 
-		// painel load/show
-		JPanel fileChoser = new JPanel();
-		fileChoser.setLayout(new GridLayout(1, 3));
-
+		JPanel filePathPanel = new JPanel();
 		filePath = new JTextField("Please Load An Excel file");
 		filePath.setHorizontalAlignment(JTextField.CENTER);
 		filePath.setEditable(false);
+		filePath.setFont(new Font("Arial", Font.BOLD, 20));
+		filePath.setPreferredSize(new Dimension(500,45));
+		
+		
+		filePathPanel.add(filePath);
+		// painel load/show
+		JPanel fileChoser = new JPanel();
 
 		JButton loadFileButton = new JButton("Load File");
 		loadFileButton.setHorizontalAlignment(JButton.CENTER);
-		loadFileButton.setPreferredSize(new Dimension(300, 25));
+		loadFileButton.setPreferredSize(new Dimension(200, 50));
+		loadFileButton.setFont(new Font("Arial", Font.BOLD, 15));
 		loadFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
@@ -124,7 +140,8 @@ public class GUI {
 		showFileButton = new JButton("Show Excel");
 		showFileButton.setEnabled(false);
 		showFileButton.setHorizontalAlignment(JButton.CENTER);
-		showFileButton.setPreferredSize(new Dimension(300, 25));
+		showFileButton.setPreferredSize(new Dimension(200, 50));
+		showFileButton.setFont(new Font("Arial", Font.BOLD, 15));
 		showFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -135,36 +152,41 @@ public class GUI {
 			}
 		});
 
-		fileChoser.add(filePath);
-		fileChoser.add(loadFileButton);
-		fileChoser.add(showFileButton);
+		fileChoser.add(loadFileButton,BorderLayout.WEST);
+		fileChoser.add(showFileButton,BorderLayout.EAST);
+		fileChoser.setPreferredSize(new Dimension(450,60));
 
 		esquerdo1.add(dataFile);
+		esquerdo1.add(filePathPanel);
 		esquerdo1.add(fileChoser);
 		// painel esquerdo 2
-		JPanel esquerdo2 = new JPanel(new GridLayout(2, 1));
+		JPanel esquerdo2 = new JPanel(new FlowLayout());
+		esquerdo2.setBorder(raisedbevel);
 
 		// Label longmethod
-		JPanel longMethodPanel = new JPanel(new GridLayout(1, 2));
-		JLabel longText = new JLabel("Long Method:");
-		longText.setFont(new Font("Arial", Font.BOLD, 20));
-		longMethodPanel.add(longText);
-
+		JPanel longTextPanel = new JPanel();
+		JLabel longText = new JLabel("Long Method:", SwingConstants.CENTER);
+		longText.setFont(new Font("Arial", Font.BOLD, 40));
+		
+		longTextPanel.add(longText);
+		longTextPanel.setPreferredSize(new Dimension(450,70));
 		// painel botoesLongMethod
-		JPanel botoesLongMethodPanel = new JPanel(new GridLayout(1, 5));
+		JPanel parametrosLongMethodPanel = new JPanel();
 
 		Border border = BorderFactory.createLineBorder(Color.BLUE, 1);
 
 		JLabel linesOfCode = new JLabel("Lines of code");
 		linesOfCode.setHorizontalAlignment(JLabel.CENTER);
 		linesOfCode.setBorder(border);
-		linesOfCode.setPreferredSize(new Dimension(115, 30));
-		botoesLongMethodPanel.add(linesOfCode);
+		linesOfCode.setFont(new Font("Arial", Font.BOLD, 20));
+		linesOfCode.setPreferredSize(new Dimension(200, 50));
+		parametrosLongMethodPanel.add(linesOfCode);
 
 		loc = new JTextField("80");
 		loc.setHorizontalAlignment(JTextField.CENTER);
-		loc.setPreferredSize(new Dimension(30, 30));
-		botoesLongMethodPanel.add(loc);
+		loc.setFont(new Font("Arial", Font.BOLD, 20));
+		loc.setPreferredSize(new Dimension(100, 50));
+		parametrosLongMethodPanel.add(loc);
 		loc.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
@@ -177,13 +199,15 @@ public class GUI {
 		JLabel cyclomaticComplexity = new JLabel("Cyclomatic Complexity");
 		cyclomaticComplexity.setHorizontalAlignment(JLabel.CENTER);
 		cyclomaticComplexity.setBorder(border);
-		cyclomaticComplexity.setPreferredSize(new Dimension(140, 30));
-		botoesLongMethodPanel.add(cyclomaticComplexity);
+		cyclomaticComplexity.setFont(new Font("Arial", Font.BOLD, 17));
+		cyclomaticComplexity.setPreferredSize(new Dimension(200, 50));
+		parametrosLongMethodPanel.add(cyclomaticComplexity);
 
 		cyclo = new JTextField("10");
 		cyclo.setHorizontalAlignment(JTextField.CENTER);
-		cyclo.setPreferredSize(new Dimension(30, 30));
-		botoesLongMethodPanel.add(cyclo);
+		cyclo.setFont(new Font("Arial", Font.BOLD, 20));
+		cyclo.setPreferredSize(new Dimension(100, 50));
+		parametrosLongMethodPanel.add(cyclo);
 		cyclo.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
@@ -193,10 +217,12 @@ public class GUI {
 			}
 		});
 
+		JPanel longMetodPanel = new JPanel();
 		longMethod = new JButton("Long Method");
-		longMethod.setPreferredSize(new Dimension(300, 50));
+		longMethod.setPreferredSize(new Dimension(400, 50));
+		longMethod.setFont(new Font("Arial", Font.BOLD, 15));
 		longMethod.setEnabled(false);
-		botoesLongMethodPanel.add(longMethod);
+		longMetodPanel.add(longMethod);
 		longMethod.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (loc.getText() != "" && cyclo.getText() != "") {
@@ -208,29 +234,37 @@ public class GUI {
 				}
 			}
 		});
-		esquerdo2.add(longMethodPanel);
-		esquerdo2.add(botoesLongMethodPanel);
+		esquerdo2.add(longTextPanel);
+		esquerdo2.add(parametrosLongMethodPanel);
+		esquerdo2.add(longMetodPanel);
 		// fim painel esquerdo 2
 
 		// painel esquerdo 3
+	
 
-		JPanel esquerdo3 = new JPanel(new GridLayout(2, 1));
-		JPanel featureEnvyPanel = new JPanel(new GridLayout(1, 2));
+		JPanel esquerdo3 = new JPanel();
+		esquerdo3.setBorder(raisedbevel);
+		
+		JPanel featureEnvyPanel = new JPanel();
 		JLabel featureEnvyLabel = new JLabel("Feature Envy:");
-		featureEnvyLabel.setFont(new Font("Arial", Font.BOLD, 20));
+		featureEnvyLabel.setHorizontalAlignment(JTextField.CENTER);
+		featureEnvyLabel.setFont(new Font("Arial", Font.BOLD, 40));
 		featureEnvyPanel.add(featureEnvyLabel);
+		featureEnvyPanel.setPreferredSize(new Dimension(450,70));
 
-		JPanel botoesFeatureEnvyPanel = new JPanel(new GridLayout(1, 6));
+		JPanel botoesFeatureEnvyPanel = new JPanel();
 
 		JLabel atfd = new JLabel("ATFD >");
 		atfd.setHorizontalAlignment(JLabel.CENTER);
 		atfd.setBorder(border);
-		atfd.setPreferredSize(new Dimension(75, 30));
+		atfd.setPreferredSize(new Dimension(100, 50));
+		atfd.setFont(new Font("Arial", Font.BOLD, 20));
 		botoesFeatureEnvyPanel.add(atfd);
 
 		atfd_txt = new JTextField("4");
 		atfd_txt.setHorizontalAlignment(JTextField.CENTER);
-		atfd_txt.setPreferredSize(new Dimension(30, 30));
+		atfd_txt.setPreferredSize(new Dimension(100, 50));
+		atfd_txt.setFont(new Font("Arial", Font.BOLD, 20));
 		atfd_txt.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
@@ -250,18 +284,22 @@ public class GUI {
 		String[] option = { "and", "or" };
 		optionList = new JComboBox<String>(option);
 		optionList.setSelectedIndex(1);
-		optionList.setPreferredSize(new Dimension(108, 30));
+		optionList.setPreferredSize(new Dimension(100, 50));
+		optionList.setFont(new Font("Arial", Font.BOLD, 17));
+		((JLabel)optionList.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);//centrar o texto na JComboBox
 		botoesFeatureEnvyPanel.add(optionList);
 
 		JLabel laa = new JLabel("LAA <");
 		laa.setHorizontalAlignment(JLabel.CENTER);
 		laa.setBorder(border);
-		laa.setPreferredSize(new Dimension(75, 30));
+		laa.setPreferredSize(new Dimension(100, 50));
+		laa.setFont(new Font("Arial", Font.BOLD, 20));
 		botoesFeatureEnvyPanel.add(laa);
 
 		laa_txt = new JTextField("0.42");
 		laa_txt.setHorizontalAlignment(JTextField.CENTER);
-		laa_txt.setPreferredSize(new Dimension(30, 30));
+		laa_txt.setPreferredSize(new Dimension(100, 50));
+		laa_txt.setFont(new Font("Arial", Font.BOLD, 20));
 		laa_txt.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
@@ -277,12 +315,14 @@ public class GUI {
 			}
 		});
 		botoesFeatureEnvyPanel.add(laa_txt);
-
+		
+		JPanel feautureEnvyButtonPanel = new JPanel();
 		featureEnvyButton = new JButton("Feature Envy");
 		featureEnvyButton.setHorizontalAlignment(JButton.CENTER);
-		featureEnvyButton.setPreferredSize(new Dimension(300, 50));
+		featureEnvyButton.setPreferredSize(new Dimension(400, 50));
+		featureEnvyButton.setFont(new Font("Arial", Font.BOLD, 15));
 		featureEnvyButton.setEnabled(false);
-		botoesFeatureEnvyPanel.add(featureEnvyButton);
+		feautureEnvyButtonPanel.add(featureEnvyButton);
 		featureEnvyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String choice = optionList.getSelectedItem().toString();
@@ -295,15 +335,21 @@ public class GUI {
 
 		esquerdo3.add(featureEnvyPanel);
 		esquerdo3.add(botoesFeatureEnvyPanel);
+		esquerdo3.add(feautureEnvyButtonPanel);
 
 		// painel esquerdo 4
-		JPanel esquerdo4 = new JPanel(new GridLayout(2, 1));
+		JPanel esquerdo4 = new JPanel();
+		esquerdo4.setBorder(raisedbevel);
+		
 		JPanel qualityIndicatorPanel = new JPanel(new GridLayout(1, 2));
-		JLabel qualityIndicatorLabel = new JLabel("Quality indicators:");
-		qualityIndicatorLabel.setFont(new Font("Arial", Font.BOLD, 20));
+		JLabel qualityIndicatorLabel = new JLabel("Quality indicators:", SwingConstants.CENTER);
+		qualityIndicatorLabel.setFont(new Font("Arial", Font.BOLD, 40));
 		qualityIndicatorPanel.add(qualityIndicatorLabel);
+		qualityIndicatorPanel.setPreferredSize(new Dimension(450,70));
 
 		JPanel indicatorsTable = new JPanel(new GridLayout(0, 5));
+		indicatorsTable.setPreferredSize(new Dimension(760,155));
+		
 		JLabel blank = new JLabel("");
 		blank.setHorizontalAlignment(JTextField.CENTER);
 		blank.setBorder(border);
@@ -312,104 +358,123 @@ public class GUI {
 		JLabel dci = new JLabel("DCI");
 		dci.setHorizontalAlignment(JTextField.CENTER);
 		dci.setBorder(border);
+		dci.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(dci);
 		JLabel dii = new JLabel("DII");
 		dii.setHorizontalAlignment(JTextField.CENTER);
 		dii.setBorder(border);
+		dii.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(dii);
 		JLabel adci = new JLabel("ADCI");
 		adci.setHorizontalAlignment(JTextField.CENTER);
 		adci.setBorder(border);
+		adci.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(adci);
 		JLabel adii = new JLabel("ADII");
 		adii.setHorizontalAlignment(JTextField.CENTER);
 		adii.setBorder(border);
+		adii.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(adii);
-		JLabel iplasma = new JLabel("Iplasma");
+		JLabel iplasma = new JLabel("IPlasma");
 		iplasma.setHorizontalAlignment(JTextField.CENTER);
 		iplasma.setBorder(border);
+		iplasma.setFont(new Font("Arial", Font.BOLD, 15));
 		indicatorsTable.add(iplasma);
 
 		dciIplasma = new JTextField("-");
 		dciIplasma.setHorizontalAlignment(JTextField.CENTER);
 		dciIplasma.setEditable(false);
 		dciIplasma.setBorder(border);
+		dciIplasma.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(dciIplasma);
 
 		diiIplasma = new JTextField("-");
 		diiIplasma.setHorizontalAlignment(JTextField.CENTER);
 		diiIplasma.setEditable(false);
 		diiIplasma.setBorder(border);
+		diiIplasma.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(diiIplasma);
 
 		adciIplasma = new JTextField("-");
 		adciIplasma.setHorizontalAlignment(JTextField.CENTER);
 		adciIplasma.setEditable(false);
 		adciIplasma.setBorder(border);
+		adciIplasma.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(adciIplasma);
 
 		adiiIplasma = new JTextField("-");
 		adiiIplasma.setHorizontalAlignment(JTextField.CENTER);
 		adiiIplasma.setEditable(false);
 		adiiIplasma.setBorder(border);
+		adiiIplasma.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(adiiIplasma);
 
 		JLabel pmd = new JLabel("PMD");
 		pmd.setHorizontalAlignment(JTextField.CENTER);
 		pmd.setBorder(border);
+		pmd.setFont(new Font("Arial", Font.BOLD, 15));
 		indicatorsTable.add(pmd);
 
 		dciPmd = new JTextField("-");
 		dciPmd.setHorizontalAlignment(JTextField.CENTER);
 		dciPmd.setEditable(false);
 		dciPmd.setBorder(border);
+		dciPmd.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(dciPmd);
 
 		diiPmd = new JTextField("-");
 		diiPmd.setHorizontalAlignment(JTextField.CENTER);
 		diiPmd.setEditable(false);
 		diiPmd.setBorder(border);
+		diiPmd.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(diiPmd);
 
 		adciPmd = new JTextField("-");
 		adciPmd.setHorizontalAlignment(JTextField.CENTER);
 		adciPmd.setEditable(false);
 		adciPmd.setBorder(border);
+		adciPmd.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(adciPmd);
 
 		adiiPmd = new JTextField("-");
 		adiiPmd.setHorizontalAlignment(JTextField.CENTER);
 		adiiPmd.setEditable(false);
 		adiiPmd.setBorder(border);
+		adiiPmd.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(adiiPmd);
 
 		definedRules = new JLabel("Defined Rules");
 		definedRules.setHorizontalAlignment(JTextField.CENTER);
 		definedRules.setBorder(border);
+		definedRules.setFont(new Font("Arial", Font.BOLD, 12));
 		indicatorsTable.add(definedRules);
 
 		dciDefinedRules = new JTextField("-");
 		dciDefinedRules.setHorizontalAlignment(JTextField.CENTER);
 		dciDefinedRules.setEditable(false);
 		dciDefinedRules.setBorder(border);
+		dciDefinedRules.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(dciDefinedRules);
 
 		diiDefinedRules = new JTextField("-");
 		diiDefinedRules.setHorizontalAlignment(JTextField.CENTER);
 		diiDefinedRules.setEditable(false);
 		diiDefinedRules.setBorder(border);
+		diiDefinedRules.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(diiDefinedRules);
 
 		adciDefinedRules = new JTextField("-");
 		adciDefinedRules.setHorizontalAlignment(JTextField.CENTER);
 		adciDefinedRules.setEditable(false);
 		adciDefinedRules.setBorder(border);
+		adciDefinedRules.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(adciDefinedRules);
 
 		adiiDefinedRules = new JTextField("-");
 		adiiDefinedRules.setHorizontalAlignment(JTextField.CENTER);
 		adiiDefinedRules.setEditable(false);
 		adiiDefinedRules.setBorder(border);
+		adiiDefinedRules.setFont(new Font("Arial", Font.BOLD, 20));
 		indicatorsTable.add(adiiDefinedRules);
 
 		esquerdo4.add(qualityIndicatorPanel);
@@ -495,7 +560,7 @@ public class GUI {
 		adciPmd.setText("" + countersPmd[2]);
 		adiiPmd.setText("" + countersPmd[3]);
 	}
-
+//alaaaaaaa
 	public void receiveOutputDefectDetectionDefinedRules(String origem, int[] counters) {// receber e colocar na GUI o
 																							// resultado das regras
 																							// definidas
@@ -523,6 +588,8 @@ public class GUI {
 		adciDefinedRules.setText("-");
 		adiiDefinedRules.setText("-");
 
+		definedRules.setText("Defined Rules");
+		
 	}
 
 }

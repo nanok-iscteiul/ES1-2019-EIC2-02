@@ -14,7 +14,7 @@ public class CustomGridBag extends JPanel {
 		setLayout(new GridBagLayout());
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.weighty = 1.0;
-		constraints.weightx = 0.075;
+		constraints.weightx = 0.0;
 		// esquerdo
 		addGB(esquerdo, 0, 0);
 		// fim esquerdo
