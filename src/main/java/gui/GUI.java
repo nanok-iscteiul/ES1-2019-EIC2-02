@@ -8,7 +8,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,31 +38,31 @@ import application.MethodData;
 
 public class GUI {
 
-	private Application app;
+	private Application app;// objecto aplicacao
 	private JFrame frame;
-	private JTextField filePath;
-	private JTextField loc;
-	private JTextField cyclo;
-	private JButton longMethod;
-	private JComboBox<String> optionList;
-	private JTextField laa_txt;
-	private JTextField atfd_txt;
-	private JButton featureEnvyButton;
-	private JTextField dciIplasma;
-	private JTextField diiIplasma;
-	private JTextField adciIplasma;
-	private JTextField adiiIplasma;
-	private JTextField dciPmd;
-	private JTextField diiPmd;
-	private JTextField adciPmd;
-	private JTextField adiiPmd;
-	private JTextField dciDefinedRules;
-	private JTextField diiDefinedRules;
-	private JTextField adciDefinedRules;
-	private JTextField adiiDefinedRules;
-	private JButton showFileButton;
-	private DefaultTableModel tableModel;
-	private JLabel definedRules;
+	private JTextField filePath;// textField do nome do ficheiro
+	private JTextField loc;// textField do numero de linhas de codigo
+	private JTextField cyclo;// textField da complexidade cyclomatica
+	private JButton longMethod;// botao para lancar o long method
+	private JComboBox<String> optionList;// ComboBox para and e or
+	private JTextField laa_txt;// textField para introduzir um valor de laa
+	private JTextField atfd_txt;// textField para introduzir um valor para atfd
+	private JButton featureEnvyButton;// botao para lancar o feature_envy
+	private JTextField dciIplasma;// contador dci para detecao de defeitos iplasma
+	private JTextField diiIplasma;// contador dii para detecao de defeitos iplasma
+	private JTextField adciIplasma;// contador adci para detecao de defeitos iplasma
+	private JTextField adiiIplasma;// contador adii para detecao de defeitos iplasma
+	private JTextField dciPmd;// contador dci para detecao de defeitos pmd
+	private JTextField diiPmd;// contador dii para detecao de defeitos pmd
+	private JTextField adciPmd;// contador adci para detecao de defeitos pmd
+	private JTextField adiiPmd;// contador adii para detecao de defeitos pmd
+	private JTextField dciDefinedRules;// contador dci para detecao de defeitos das regras definidas
+	private JTextField diiDefinedRules;// contador dii para detecao de defeitos das regras definidas
+	private JTextField adciDefinedRules;// contador adci para detecao de defeitos das regras definidas
+	private JTextField adiiDefinedRules;// contador adii para detecao de defeitos das regras definidas
+	private JButton showFileButton;// botao para lancar o programa excel com o ficheiro escolhido
+	private DefaultTableModel tableModel;// tabela da interface gráfica com dados do excel e regras definidas
+	private JLabel definedRules;// Label para detecao de defeitos das regras definidas
 
 	public GUI(Application app) {
 		this.app = app;
@@ -75,8 +74,9 @@ public class GUI {
 	}
 
 	private void createFrame() {
-		frame.setMinimumSize(new Dimension((int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth(),
-				(int)GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight()));
+		frame.setMinimumSize(new Dimension(
+				(int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth(),
+				(int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight()));
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
@@ -96,18 +96,16 @@ public class GUI {
 		dFText.setFont(new Font("Arial", Font.BOLD, 45));
 
 		dataFile.add(dFText);
-		dataFile.setPreferredSize(new Dimension(450,70));
-		//panel pathficheiro
-		
+		dataFile.setPreferredSize(new Dimension(450, 70));
+		// panel pathficheiro
 
 		JPanel filePathPanel = new JPanel();
 		filePath = new JTextField("Please Load An Excel file");
 		filePath.setHorizontalAlignment(JTextField.CENTER);
 		filePath.setEditable(false);
 		filePath.setFont(new Font("Arial", Font.BOLD, 20));
-		filePath.setPreferredSize(new Dimension(500,45));
-		
-		
+		filePath.setPreferredSize(new Dimension(500, 45));
+
 		filePathPanel.add(filePath);
 		// painel load/show
 		JPanel fileChoser = new JPanel();
@@ -117,7 +115,7 @@ public class GUI {
 		loadFileButton.setPreferredSize(new Dimension(200, 50));
 		loadFileButton.setFont(new Font("Arial", Font.BOLD, 15));
 		loadFileButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {// ao ser clicado no botao para abrir um ficheiro excel
 				JFileChooser chooser = new JFileChooser();
 				if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 					if (chooser.getSelectedFile().getAbsolutePath().endsWith(".xlsx")
@@ -131,8 +129,9 @@ public class GUI {
 						app.loadFile();
 						fillTable();
 						app.defectDetection();
-					}else {
-						JOptionPane.showMessageDialog(null, "Escolha um ficheiro excel", "Erro ao abrir ficheiro", JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(null, "Escolha um ficheiro excel", "Erro ao abrir ficheiro",
+								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 			}
@@ -143,7 +142,7 @@ public class GUI {
 		showFileButton.setPreferredSize(new Dimension(200, 50));
 		showFileButton.setFont(new Font("Arial", Font.BOLD, 15));
 		showFileButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {// abrir o programa excel com o ficheiro escolhido
 				try {
 					Desktop.getDesktop().open(new File(app.getFileName()));
 				} catch (IOException e1) {
@@ -152,9 +151,9 @@ public class GUI {
 			}
 		});
 
-		fileChoser.add(loadFileButton,BorderLayout.WEST);
-		fileChoser.add(showFileButton,BorderLayout.EAST);
-		fileChoser.setPreferredSize(new Dimension(450,60));
+		fileChoser.add(loadFileButton, BorderLayout.WEST);
+		fileChoser.add(showFileButton, BorderLayout.EAST);
+		fileChoser.setPreferredSize(new Dimension(450, 60));
 
 		esquerdo1.add(dataFile);
 		esquerdo1.add(filePathPanel);
@@ -167,9 +166,9 @@ public class GUI {
 		JPanel longTextPanel = new JPanel();
 		JLabel longText = new JLabel("Long Method:", SwingConstants.CENTER);
 		longText.setFont(new Font("Arial", Font.BOLD, 40));
-		
+
 		longTextPanel.add(longText);
-		longTextPanel.setPreferredSize(new Dimension(450,70));
+		longTextPanel.setPreferredSize(new Dimension(450, 70));
 		// painel botoesLongMethod
 		JPanel parametrosLongMethodPanel = new JPanel();
 
@@ -190,7 +189,7 @@ public class GUI {
 		loc.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
-				if (!(Character.isDigit(c))) {
+				if (!(Character.isDigit(c))) {// apenas aceita numeros
 					keyEvent.consume();
 				}
 			}
@@ -211,7 +210,7 @@ public class GUI {
 		cyclo.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
-				if (!(Character.isDigit(c))) {
+				if (!(Character.isDigit(c))) {// apenas aceita numeros
 					keyEvent.consume();
 				}
 			}
@@ -224,7 +223,8 @@ public class GUI {
 		longMethod.setEnabled(false);
 		longMetodPanel.add(longMethod);
 		longMethod.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {// correr o long method e a detecao de defeitos para esses
+														// valores
 				if (loc.getText() != "" && cyclo.getText() != "") {
 					int locValue = Integer.parseInt(loc.getText());
 					int cycloValue = Integer.parseInt(cyclo.getText());
@@ -240,17 +240,16 @@ public class GUI {
 		// fim painel esquerdo 2
 
 		// painel esquerdo 3
-	
 
 		JPanel esquerdo3 = new JPanel();
 		esquerdo3.setBorder(raisedbevel);
-		
+
 		JPanel featureEnvyPanel = new JPanel();
 		JLabel featureEnvyLabel = new JLabel("Feature Envy:");
 		featureEnvyLabel.setHorizontalAlignment(JTextField.CENTER);
 		featureEnvyLabel.setFont(new Font("Arial", Font.BOLD, 40));
 		featureEnvyPanel.add(featureEnvyLabel);
-		featureEnvyPanel.setPreferredSize(new Dimension(450,70));
+		featureEnvyPanel.setPreferredSize(new Dimension(450, 70));
 
 		JPanel botoesFeatureEnvyPanel = new JPanel();
 
@@ -266,7 +265,7 @@ public class GUI {
 		atfd_txt.setPreferredSize(new Dimension(100, 50));
 		atfd_txt.setFont(new Font("Arial", Font.BOLD, 20));
 		atfd_txt.addKeyListener(new KeyAdapter() {
-			public void keyTyped(KeyEvent keyEvent) {
+			public void keyTyped(KeyEvent keyEvent) {// aceita numeros inteiros ou decimais
 				char c = keyEvent.getKeyChar();
 				boolean exit = false;
 				if (c == KeyEvent.VK_PERIOD && atfd_txt.getText().contains(".")) {
@@ -286,7 +285,8 @@ public class GUI {
 		optionList.setSelectedIndex(1);
 		optionList.setPreferredSize(new Dimension(100, 50));
 		optionList.setFont(new Font("Arial", Font.BOLD, 17));
-		((JLabel)optionList.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);//centrar o texto na JComboBox
+		((JLabel) optionList.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);// centrar o texto na
+																							// JComboBox
 		botoesFeatureEnvyPanel.add(optionList);
 
 		JLabel laa = new JLabel("LAA <");
@@ -301,7 +301,7 @@ public class GUI {
 		laa_txt.setPreferredSize(new Dimension(100, 50));
 		laa_txt.setFont(new Font("Arial", Font.BOLD, 20));
 		laa_txt.addKeyListener(new KeyAdapter() {
-			public void keyTyped(KeyEvent keyEvent) {
+			public void keyTyped(KeyEvent keyEvent) {// aceita numeros inteiros ou decimais
 				char c = keyEvent.getKeyChar();
 				boolean exit = false;
 				if (c == KeyEvent.VK_PERIOD && laa_txt.getText().contains(".")) {
@@ -315,7 +315,7 @@ public class GUI {
 			}
 		});
 		botoesFeatureEnvyPanel.add(laa_txt);
-		
+
 		JPanel feautureEnvyButtonPanel = new JPanel();
 		featureEnvyButton = new JButton("Feature Envy");
 		featureEnvyButton.setHorizontalAlignment(JButton.CENTER);
@@ -324,7 +324,8 @@ public class GUI {
 		featureEnvyButton.setEnabled(false);
 		feautureEnvyButtonPanel.add(featureEnvyButton);
 		featureEnvyButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {// correr o feature_envy e a detecao de defeitos para esses
+														// valores
 				String choice = optionList.getSelectedItem().toString();
 				app.feature_envy(Double.parseDouble(atfd_txt.getText()), choice, Double.parseDouble(laa_txt.getText()));
 				fillFeature_envy();
@@ -340,16 +341,16 @@ public class GUI {
 		// painel esquerdo 4
 		JPanel esquerdo4 = new JPanel();
 		esquerdo4.setBorder(raisedbevel);
-		
+
 		JPanel qualityIndicatorPanel = new JPanel(new GridLayout(1, 2));
 		JLabel qualityIndicatorLabel = new JLabel("Quality indicators:", SwingConstants.CENTER);
 		qualityIndicatorLabel.setFont(new Font("Arial", Font.BOLD, 40));
 		qualityIndicatorPanel.add(qualityIndicatorLabel);
-		qualityIndicatorPanel.setPreferredSize(new Dimension(450,70));
+		qualityIndicatorPanel.setPreferredSize(new Dimension(450, 70));
 
 		JPanel indicatorsTable = new JPanel(new GridLayout(0, 5));
-		indicatorsTable.setPreferredSize(new Dimension(760,155));
-		
+		indicatorsTable.setPreferredSize(new Dimension(760, 155));
+
 		JLabel blank = new JLabel("");
 		blank.setHorizontalAlignment(JTextField.CENTER);
 		blank.setBorder(border);
@@ -560,7 +561,7 @@ public class GUI {
 		adciPmd.setText("" + countersPmd[2]);
 		adiiPmd.setText("" + countersPmd[3]);
 	}
-//alaaaaaaa
+
 	public void receiveOutputDefectDetectionDefinedRules(String origem, int[] counters) {// receber e colocar na GUI o
 																							// resultado das regras
 																							// definidas
@@ -589,7 +590,7 @@ public class GUI {
 		adiiDefinedRules.setText("-");
 
 		definedRules.setText("Defined Rules");
-		
+
 	}
 
 }

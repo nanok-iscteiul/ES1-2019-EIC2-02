@@ -20,7 +20,7 @@ public class Application {
 
 	private String FILE_NAME;// caminho do ficheiro excel
 
-	private List<MethodData> methodsData;
+	private List<MethodData> methodsData;// lista com todos os metodos obtidos do ficheiro excel
 
 	private GUI gui;
 
@@ -33,7 +33,8 @@ public class Application {
 		this.FILE_NAME = path;
 	}
 
-	public void longMethod(int locThreshold, int cycloThreshold) {
+	public void longMethod(int locThreshold, int cycloThreshold) {// para cada metodo da lista methodsData atualizar o
+																	// campo is_long_method_by_defined_rules
 		for (MethodData m : methodsData) {
 			if (m.getLoc() > locThreshold && m.getCyclo() > cycloThreshold) {
 				m.setIs_long_method_by_rules(true);
@@ -43,15 +44,17 @@ public class Application {
 		}
 	}
 
-	public void feature_envy(double atfdThreshold, String andOr, double laaThreshold) {
+	public void feature_envy(double atfdThreshold, String andOr, double laaThreshold) {// para cada metodo da lista
+																						// methodsData atualizar o campo
+																						// is_feature_envy_by_rules
 		for (MethodData m : methodsData) {
-			if (andOr == "and") {
+			if (andOr == "and") {// no caso do utilizador introduzir "and"
 				if (m.getAtfd() > atfdThreshold && m.getLaa() < laaThreshold) {
 					m.setIs_feature_envy_by_rules(true);
 				} else {
 					m.setIs_feature_envy_by_rules(false);
 				}
-			} else {
+			} else {// no caso do utilizador introduzir "or"
 				if (m.getAtfd() > atfdThreshold || m.getLaa() < laaThreshold) {
 					m.setIs_feature_envy_by_rules(true);
 				} else {
@@ -60,9 +63,9 @@ public class Application {
 			}
 		}
 	}
-	
-	public void defectDetection() {
-		int[] countersIPlasma = { 0, 0, 0, 0 };
+
+	public void defectDetection() {// detecao de defeitos para o iplasma e pmd, obtidos do excel
+		int[] countersIPlasma = { 0, 0, 0, 0 };// dci,dii,adci,adii, respetivamente para cada posicao do vetor
 		int[] countersPmd = { 0, 0, 0, 0 };
 
 		for (MethodData m : methodsData) {
@@ -72,7 +75,8 @@ public class Application {
 		gui.receiveOutputDefectDetection(countersIPlasma, countersPmd);
 	}
 
-	public void defectDetectionDefinedRules(int number) {// 0-longMethod; 1-feature_envy
+	public void defectDetectionDefinedRules(int number) {// detecao de defeitos para as regras definidas pelo utilizador
+															// 0-longMethod; 1-feature_envy
 		int[] counters = { 0, 0, 0, 0 };
 		for (MethodData m : methodsData) {
 			if (number == 0) {// para long method
@@ -81,30 +85,36 @@ public class Application {
 				counters = checkErrorIdentifiers(m.getIs_feature_envy(), m.getIs_feature_envy_by_rules(), counters);
 			}
 		}
-		if (number == 0) {
+		if (number == 0) {// enviar resultado para longmethod
 			gui.receiveOutputDefectDetectionDefinedRules("Long Method", counters);
-		} else {
+		} else {// enviar resultado para feature_envy
 			gui.receiveOutputDefectDetectionDefinedRules("Feature Envy", counters);
 		}
 	}
-	
-	private int[] checkErrorIdentifiers(boolean islong, boolean iplasmaOrPmd, int[] counters) {
-		if (islong == true && iplasmaOrPmd == true) {// DCI
+
+	private int[] checkErrorIdentifiers(boolean islong, boolean iplasmaOrPmdOrDefRules, int[] counters) {// verificar e
+																											// incrementar
+																											// um valor
+																											// para a
+																											// detecao
+																											// de
+																											// defeitos
+		if (islong == true && iplasmaOrPmdOrDefRules == true) {// DCI
 			counters[0]++;
 		}
-		if (islong == false && iplasmaOrPmd == true) {// DII
+		if (islong == false && iplasmaOrPmdOrDefRules == true) {// DII
 			counters[1]++;
 		}
-		if (islong == false && iplasmaOrPmd == false) {// ADCI
+		if (islong == false && iplasmaOrPmdOrDefRules == false) {// ADCI
 			counters[2]++;
 		}
-		if (islong == true && iplasmaOrPmd == false) {// ADII
+		if (islong == true && iplasmaOrPmdOrDefRules == false) {// ADII
 			counters[3]++;
 		}
 		return counters;
 	}
-	
-	public void loadFile() {
+
+	public void loadFile() {//preencher o vetor methodsData com os valores do excel
 		methodsData.clear();// limpar o vetor anterior sempre que se carrega um novo ficheiro
 		try {
 			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));// abre o ficheiro excel
@@ -179,12 +189,12 @@ public class Application {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String getFileName() {
 		return FILE_NAME;
 	}
-	
-	public List<MethodData> getMethodsData(){
+
+	public List<MethodData> getMethodsData() {
 		return methodsData;
 	}
 }
