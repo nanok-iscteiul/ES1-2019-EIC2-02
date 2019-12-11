@@ -83,7 +83,7 @@ public class GUI {
 		filePath.setHorizontalAlignment(JTextField.CENTER);
 		filePath.setEditable(false);
 		filePath.setFont(new Font("Arial", Font.BOLD, 20));
-		filePath.setPreferredSize(new Dimension(500, 45));
+		filePath.setPreferredSize(new Dimension(700, 45));
 		filePathPanel.add(filePath);
 		
 		//Panel Esquerdo 1 - Panel com os Botoes Load e Show
@@ -153,11 +153,11 @@ public class GUI {
 			}
 		});
 
-		JLabel cyclomaticComplexity = new JLabel("Complexity >");
+		JLabel cyclomaticComplexity = new JLabel("Cyclomatic Complexity >");
 		cyclomaticComplexity.setHorizontalAlignment(JLabel.CENTER);
 		cyclomaticComplexity.setBorder(border);
 		cyclomaticComplexity.setFont(new Font("Arial", Font.BOLD, 20));
-		cyclomaticComplexity.setPreferredSize(new Dimension(220, 50));
+		cyclomaticComplexity.setPreferredSize(new Dimension(240, 50));
 
 		cyclo = new JTextField("10");
 		cyclo.setHorizontalAlignment(JTextField.CENTER);
@@ -395,16 +395,16 @@ public class GUI {
 		}
 		table.getColumn(col[5]).setMinWidth(100);
 		table.getColumn(col[5]).setMaxWidth(100);
-		table.getColumn(col[6]).setMinWidth(70);
-		table.getColumn(col[6]).setMaxWidth(70);
-		table.getColumn(col[7]).setMinWidth(70);
-		table.getColumn(col[7]).setMaxWidth(70);
-		table.getColumn(col[8]).setMinWidth(140);
-		table.getColumn(col[8]).setMaxWidth(140);
-		table.getColumn(col[9]).setMinWidth(200);
-		table.getColumn(col[9]).setMaxWidth(240);
-		table.getColumn(col[10]).setMinWidth(205);
-		table.getColumn(col[10]).setMaxWidth(205);
+		table.getColumn(col[6]).setMinWidth(65);
+		table.getColumn(col[6]).setMaxWidth(65);
+		table.getColumn(col[7]).setMinWidth(65);
+		table.getColumn(col[7]).setMaxWidth(65);
+		table.getColumn(col[8]).setMinWidth(100);
+		table.getColumn(col[8]).setMaxWidth(100);
+		table.getColumn(col[9]).setMinWidth(180);
+		table.getColumn(col[9]).setMaxWidth(180);
+		table.getColumn(col[10]).setMinWidth(195);
+		table.getColumn(col[10]).setMaxWidth(195);
 
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);

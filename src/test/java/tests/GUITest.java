@@ -26,7 +26,7 @@ class GUITest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		gui= new GUI(new Application());
+		gui = new GUI(new Application());
 	}
 
 	@AfterEach
@@ -34,28 +34,31 @@ class GUITest {
 	}
 
 	@Test
+	void testCreateButton() {
+		gui.createButton("Button", 100, 50, 12, 10);
+	}
+
+	@Test
+	void testFillTable() {
+		gui.fillTable();
+	}
+
+	@Test
 	void testReceiveOutputDefectDetection() {
-		int [] countersIPlasma = {1,2,3,4};
+		int [] countersIplasma = {1,2,3,4};
 		int [] countersPmd = {5,6,7,8};
-		gui.receiveOutputDefectDetection(countersIPlasma, countersPmd);
+		gui.receiveOutputDefectDetection(countersIplasma, countersPmd);
 	}
 
 	@Test
 	void testReceiveOutputDefectDetectionDefinedRules() {
 		int [] counters = {1,2,3,4};
 		gui.receiveOutputDefectDetectionDefinedRules("Long Method", counters);
-		gui.receiveOutputDefectDetectionDefinedRules("Feature Envy", counters);
 	}
-	
+
 	@Test
 	void testClearDefectDetectionTable() {
 		gui.clearDefectDetectionTable();
 	}
-	
-	@Test
-	void testFillTable() {
-		gui.fillTable();
-	}
-	
 
 }
