@@ -4,23 +4,24 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class CustomGridBag extends JPanel {
 	private static final long serialVersionUID = 1L;
 	GridBagConstraints constraints = new GridBagConstraints();
 
-	public CustomGridBag(JPanel esquerdo, JPanel direito) {
+	public CustomGridBag(JPanel jPanel, JPanel jPanel2) {
 		setLayout(new GridBagLayout());
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.weighty = 1.0;
+		// painel esquerdo
 		constraints.weightx = 0.0;
-		// esquerdo
-		addGB(esquerdo, 0, 0);
-		// fim esquerdo
+		addGB(jPanel, 0, 0);
+		// fim painel esquerdo
 		constraints.weightx = 1.0;
-		// direito
-		addGB(direito, 1, 0);
+		// painel direito
+		addGB(jPanel2, 1, 0);
 
 	}
 
