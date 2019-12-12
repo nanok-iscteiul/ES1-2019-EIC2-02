@@ -41,19 +41,32 @@ import application.MethodData;
  */
 public class GUI {
 
-	private Application app;// objecto aplicacao
+	private Application app;
 	private JFrame frame;
-	private JTextField filePath;// textField do nome do ficheiro
+	private JTextField filePath;
 	private JButton[] buttons;
-	private JTextField loc;// textField do numero de linhas de codigo
-	private JTextField cyclo;// textField da complexidade cyclomatica
-	private JTextField laa_txt;// textField para introduzir um valor de laa
-	private JTextField atfd_txt;// textField para introduzir um valor para atfd
-	private JComboBox<String> optionList;// ComboBox para and e or
-	private JTextField [] textFields;//Vetor que contem varias "caixas" de JTextField
-	private DefaultTableModel tableModel;// tabela da interface gráfica com dados do excel e regras definidas
-	private JLabel definedRules;// Label para detecao de defeitos das regras definidas
+	private JTextField loc;
+	private JTextField cyclo;
+	private JTextField laa_txt;
+	private JTextField atfd_txt;
+	private JComboBox<String> optionList;
+	/**
+	 * Array containing several JTextField boxes.
+	 */
+	private JTextField [] textFields;
+	/**
+	 * Graphical user interface table with excel data and defined rules.
+	 */
+	private DefaultTableModel tableModel;
+	/**
+	 * Label for defect detection of defined rules.
+	 */
+	private JLabel definedRules;
 
+	/**
+	 * Class constructor.
+	 * @param app the application this graphical interfaces refers to.
+	 */
 	public GUI(Application app) {
 		this.app = app;
 		frame = new JFrame("Aplicação");
@@ -80,7 +93,7 @@ public class GUI {
 	private void addFields() {
 		buttons = new JButton[3];
 		textFields = new JTextField[12];
-		frame.setContentPane(new CustomGridBag(generateLeft(), generateDireito()));
+		frame.setContentPane(new CustomGridBag(generateLeft(), generateRight()));
 		frame.setVisible(true);
 
 	}
@@ -105,7 +118,7 @@ public class GUI {
 	 * for the values defined by the user.
 	 * The JPanel indicatorsTable creates and adds the several tables to the frame.
 	 * 
-	 * @return JPanel with the left part of the Frame.
+	 * @return the JPanel with the left part of the Frame.
 	 */
 	private JPanel generateLeft() {
 		JPanel left = new JPanel(new GridLayout(4, 1));
@@ -351,7 +364,7 @@ public class GUI {
 	/**
 	 * Array of panels with a preferred border.
 	 * @param n size of the JPanel panels array.
-	 * @return panels array.
+	 * @return the panels array.
 	 */
 	private JPanel[] createSubLeft(int n) {
 		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
@@ -370,7 +383,7 @@ public class GUI {
 	 * @param font for the title panel
 	 * @param x dimension
 	 * @param y dimension
-	 * @return JPanel with the Title Panel with a title in the middle
+	 * @return the JPanel with the Title Panel with the title in the middle
 	 */
 	private JPanel createTitlePanel(String string, int font, int x, int  y) {
 		JPanel panel = new JPanel();
@@ -387,13 +400,13 @@ public class GUI {
 	/**
 	 * Creates a button with the title, dimension and font options.
 	 * @param name String name for the button.
-	 * @param x dimension.
-	 * @param y dimension.
-	 * @param font letters style for the button Text.
-	 * @param pos iterator for the buttons array.
-	 * @return JButton.
+	 * @param x dimension
+	 * @param y dimension
+	 * @param font letters style for the button Text
+	 * @param pos iterator for the buttons array
+	 * @return the JButton with the attributes passed
 	 */
-	public JButton createButton(String name,int x, int y, int font, int pos) {
+	public JButton createButton(String name, int x, int y, int font, int pos) {
 		JButton button = new JButton(name);
 		button.setHorizontalAlignment(JButton.CENTER);
 		button.setPreferredSize(new Dimension(x, y));
@@ -414,9 +427,9 @@ public class GUI {
 	 * @param font letters style for the table JLabel.
 	 * @param table to be added to the panel.
 	 */
-	private void createAndAddTableJLabel(String name, Border border,int font, JPanel table){
+	private void createAndAddTableJLabel(String name, Border border, int font, JPanel table){
 		JLabel label = new JLabel(name);
-		if(font==11) {
+		if(font == 11) {
 			definedRules = new JLabel("Defined Rules");
 			label = definedRules;
 		}	
@@ -429,12 +442,12 @@ public class GUI {
 	
 	/**
 	 * In the array textFields it is created a JTextField
-	 * and adds the corresponding table to it.
+	 * and adds it to the corresponding table.
 	 * @param pos iterator
 	 * @param border size.
 	 * @param indicatorsTable
 	 */
-	private void createTableJTextField(int pos,Border border,JPanel indicatorsTable) {//No vetor textFiels cria uma JTextField e adiciona a table
+	private void createTableJTextField(int pos, Border border, JPanel indicatorsTable) {
 		JTextField field = new JTextField("-");
 		field.setHorizontalAlignment(JTextField.CENTER);
 		field.setEditable(false);
@@ -450,10 +463,10 @@ public class GUI {
 	 * names for the column and then adds it to the frame, posteriorly
 	 * setting the columns sizes, and its corresponding maximum and minimum widths.
 	 * 
-	 * @return JPanel with the right part of the frame.
+	 * @return the JPanel with the right part of the frame.
 	 */
-	private JPanel generateDireito() {
-		JPanel direito = new JPanel(new GridLayout());
+	private JPanel generateRight() {
+		JPanel right = new JPanel(new GridLayout());
 		String[] col = { "MethodId", "LOC", "CYCLO", "ATFD", "LAA", "is long method", "iPlasma", "PMD",
 				"is feature envy", "is long method by defined rules", "is feature envy by defined rules" };
 		tableModel = new DefaultTableModel(col, 0);
@@ -484,9 +497,9 @@ public class GUI {
 
 		table.setEnabled(false);
 
-		direito.add(new JScrollPane(table));
+		right.add(new JScrollPane(table));
 		
-		return direito;
+		return right;
 	}
 
 	/**
@@ -554,8 +567,7 @@ public class GUI {
 	}
 
 	/**
-	 * When its uploaded a new file the previous results are
-	 * cleared from their textFields.
+	 * Clears previous results from the text fields.
 	 */
 	public void clearDefectDetectionTable() {
 		for(int i = 0; i != 12; i++) {
