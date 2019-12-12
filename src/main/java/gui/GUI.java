@@ -63,7 +63,7 @@ public class GUI {
 
 	/**
 	 *  Creates the frame, requiring a minimum size defined as the maximum
-	 *  size of the the frame of the actual workspace
+	 *  size of the frame of the actual workspace.
 	 */
 	private void createFrame() {
 		frame.setMinimumSize(new Dimension((int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth(),
@@ -75,7 +75,7 @@ public class GUI {
 	/**
 	 * Creates the left and right panel, adding them to the frame.
 	 * It also creates an array of buttons that will be enabled or disabled and 
-	 * JTextFields that could be altered in the future by the user
+	 * JTextFields that could be altered in the future by the user.
 	 */
 	private void addFields() {
 		buttons = new JButton[3];
@@ -385,15 +385,15 @@ public class GUI {
 	}
 	
 	/**
-	 * Creates a button with the title, dimension and font options
-	 * @param name String name for the button
-	 * @param x dimension
-	 * @param y dimension
-	 * @param font font style for the button Text
-	 * @param pos iterator for the buttons array
-	 * @return JButton  
+	 * Creates a button with the title, dimension and font options.
+	 * @param name String name for the button.
+	 * @param x dimension.
+	 * @param y dimension.
+	 * @param font letters style for the button Text.
+	 * @param pos iterator for the buttons array.
+	 * @return JButton.
 	 */
-	public JButton createButton(String name,int x, int y, int font, int pos) {//Cria JButtons
+	public JButton createButton(String name,int x, int y, int font, int pos) {
 		JButton button = new JButton(name);
 		button.setHorizontalAlignment(JButton.CENTER);
 		button.setPreferredSize(new Dimension(x, y));
@@ -406,16 +406,19 @@ public class GUI {
 	}
 	
 	/**
-	 * @param name for the new label
-	 * @param border 
-	 * @param font
-	 * @param table
+	 * Creates and adds a table to a determined panel. The definedRules
+	 * is the only label in which the font is equal to eleven.
+	 * If so the label points to the definedRules. 
+	 * @param name for the new label.
+	 * @param border size.
+	 * @param font letters style for the table JLabel.
+	 * @param table to be added to the panel.
 	 */
-	private void createAndAddTableJLabel(String name, Border border,int font, JPanel table){//Cria JLabel e adiciona a table
+	private void createAndAddTableJLabel(String name, Border border,int font, JPanel table){
 		JLabel label = new JLabel(name);
-		if(font==11) {//definedRules é a unica label com font == 12
+		if(font==11) {
 			definedRules = new JLabel("Defined Rules");
-			label = definedRules;// a label fica a apontar para defined Rules nesse caso
+			label = definedRules;
 		}	
 		label.setHorizontalAlignment(JTextField.CENTER);
 		label.setBorder(border);
@@ -424,6 +427,13 @@ public class GUI {
 		
 	}
 	
+	/**
+	 * In the array textFields it is created a JTextField
+	 * and adds the corresponding table to it.
+	 * @param pos iterator
+	 * @param border size.
+	 * @param indicatorsTable
+	 */
 	private void createTableJTextField(int pos,Border border,JPanel indicatorsTable) {//No vetor textFiels cria uma JTextField e adiciona a table
 		JTextField field = new JTextField("-");
 		field.setHorizontalAlignment(JTextField.CENTER);
@@ -435,13 +445,20 @@ public class GUI {
 		
 	}
 	
-	private JPanel generateDireito() {//Parte Direita da Frame
+	/**
+	 * Right part of the frame. It is create a String array with all the 
+	 * names for the column and then adds it to the frame, posteriorly
+	 * setting the columns sizes, and its corresponding maximum and minimum widths.
+	 * 
+	 * @return JPanel with the right part of the frame.
+	 */
+	private JPanel generateDireito() {
 		JPanel direito = new JPanel(new GridLayout());
 		String[] col = { "MethodId", "LOC", "CYCLO", "ATFD", "LAA", "is long method", "iPlasma", "PMD",
 				"is feature envy", "is long method by defined rules", "is feature envy by defined rules" };
 		tableModel = new DefaultTableModel(col, 0);
 		JTable table = new JTable(tableModel);
-		for (int i = 0; i < 5; i++) {// tamanhos das colunas
+		for (int i = 0; i < 5; i++) {
 			table.getColumn(col[i]).setMinWidth(70);
 			table.getColumn(col[i]).setMaxWidth(70);
 		}
@@ -472,7 +489,11 @@ public class GUI {
 		return direito;
 	}
 
-	public void fillTable() {// preencher a tabela de acordo com o ficheiro
+	/**
+	 * Firstly, sets the row count to 0 and after it fills the table
+	 * accordingly, with the file uploaded.
+	 */
+	public void fillTable() {
 		tableModel.setRowCount(0);
 		for (MethodData m : app.getMethodsData()) {
 			Object[] aux = { m.getMethodId(), m.getLoc(), m.getCyclo(), m.getAtfd(), m.getLaa(), m.getIs_long_method(),
@@ -481,20 +502,31 @@ public class GUI {
 		}
 	}
 
-	private void fillLongMethod() {// preencher a coluna do is Long method
+	/**
+	 * Fills the is long method column.
+	 */
+	private void fillLongMethod() {
 		for (MethodData m : app.getMethodsData()) {
 			tableModel.setValueAt(m.getIs_long_method_by_rules(), m.getMethodId() - 1, 9);
 		}
 	}
 
-	private void fillFeature_envy() {// preencher a coluna do is feature envy
+	/**
+	 * Fills the column of the is feature envy by iterating the
+	 * getsMethodsData and posteriorly setting the corresponding values.
+	 */
+	private void fillFeature_envy() {
 		for (MethodData m : app.getMethodsData()) {
 			tableModel.setValueAt(m.getIs_feature_envy_by_rules(), m.getMethodId() - 1, 10);
 		}
 	}
 
-	public void receiveOutputDefectDetection(int[] countersIPlasma, int[] countersPmd) {// receber output da detecao de
-																						// defeitos
+	/**
+	 * Receives and updates the outputs from the defect detection.
+	 * @param countersIPlasma array of integers.
+	 * @param countersPmd array of integers.
+	 */
+	public void receiveOutputDefectDetection(int[] countersIPlasma, int[] countersPmd) {
 		textFields[0].setText("" + countersIPlasma[0]);
 		textFields[1].setText("" + countersIPlasma[1]);
 		textFields[2].setText("" + countersIPlasma[2]);
@@ -506,9 +538,14 @@ public class GUI {
 		textFields[7].setText("" + countersPmd[3]);
 	}
 
-	public void receiveOutputDefectDetectionDefinedRules(String origem, int[] counters) {// receber e colocar na GUI o
-																							// resultado das regras definidas
-		definedRules.setText(origem);
+	/**
+	 * Receives and places on the Graphical User Interface (GUI)
+	 * the results from the rules defined.
+	 * @param origin String to setText.
+	 * @param counters array of integers.
+	 */
+	public void receiveOutputDefectDetectionDefinedRules(String origin, int[] counters) {
+		definedRules.setText(origin);
 
 		textFields[8].setText("" + counters[0]);
 		textFields[9].setText("" + counters[1]);
@@ -516,7 +553,11 @@ public class GUI {
 		textFields[11].setText("" + counters[3]);
 	}
 
-	public void clearDefectDetectionTable() {// quando é carregado um novo ficheiro tiram-se os resultados anteriores
+	/**
+	 * When its uploaded a new file the previous results are
+	 * cleared from their textFields.
+	 */
+	public void clearDefectDetectionTable() {
 		for(int i = 0; i != 12; i++) {
 			textFields[i].setText("-");
 		}
