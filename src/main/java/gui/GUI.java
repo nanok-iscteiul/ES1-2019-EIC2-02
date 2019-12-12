@@ -292,7 +292,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 				if(!atfd_txt.getText().toString().equals("") && !laa_txt.getText().toString().equals("")) {
 					String choice = optionList.getSelectedItem().toString();
-					app.feature_envy(Double.parseDouble(atfd_txt.getText()), choice, Double.parseDouble(laa_txt.getText()));
+					app.feature_envy(Double.parseDouble(atfd_txt.getText()), Double.parseDouble(laa_txt.getText()), choice);
 					fillFeature_envy();
 					app.defectDetectionDefinedRules(1);
 				}

@@ -50,8 +50,8 @@ class ApplicationTest {
 
 	@Test
 	void testFeature_envy() {
-		a.feature_envy(15, "and", 10);
-		a.feature_envy(15, "or", 10);
+		a.feature_envy(15, 10, "and");
+		a.feature_envy(15, 10, "or");
 	}
 
 	@Test
