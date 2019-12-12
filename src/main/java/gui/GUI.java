@@ -35,6 +35,10 @@ import javax.swing.table.DefaultTableModel;
 import application.Application;
 import application.MethodData;
 
+/**
+ * @author ESI-2019-EIC2-02
+ *
+ */
 public class GUI {
 
 	private Application app;// objecto aplicacao
@@ -57,27 +61,56 @@ public class GUI {
 		addFields();
 	}
 
+	/**
+	 *  Creates the frame, requiring a minimum size defined as the maximum
+	 *  size of the the frame of the actual workspace
+	 */
 	private void createFrame() {
-		frame.setMinimumSize(new Dimension(//tamanho minimo da frame defenido como tamanho maximo de uma frame no ambiente de trabalho atual
-				(int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth(),
+		frame.setMinimumSize(new Dimension((int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth(),
 				(int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight()));
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
-	private void addFields() {// Cria painel esquerdo e direito, depois adiciona-os a frame
-		buttons = new JButton[3];//3 botoes que ficarao enabled/disabled
-		textFields = new JTextField[12]; //existem 12 JTextField a serem preenchidos/alterados
-		frame.setContentPane(new CustomGridBag(generateEsquerdo(), generateDireito()));
+	/**
+	 * Creates the left and right panel, adding them to the frame.
+	 * It also creates an array of buttons that will be enabled or disabled and 
+	 * JTextFields that could be altered in the future by the user
+	 */
+	private void addFields() {
+		buttons = new JButton[3];
+		textFields = new JTextField[12];
+		frame.setContentPane(new CustomGridBag(generateLeft(), generateDireito()));
 		frame.setVisible(true);
 
 	}
-	private JPanel generateEsquerdo() {//Parte Esquerda da Frame
-		JPanel esquerdo = new JPanel(new GridLayout(4, 1));
-		JPanel[] subsEsquerdo = createSubsEsquerdo(4);
+	/**
+	 * Creates the left part of the Frame, including the fileChoser panel, 
+	 * parametrosLongMethodPanel panel, botoesFeatureEnvyPanel panel,
+	 * feautureEnvyButtonPanel panel and indicatorsTable panel with all the
+	 * labels, text field boxes, buttons and option panes associated to them.
+	 * In the fileChoser panel, when the load button is selected it opens
+	 * an Excel file, while when the show button is selected it
+	 * opens the Excel program with the selected file.
+	 * In the parametrosLongMethodPanel panel, the JLabel linesOfCode as well
+	 * as the JLabel cyclomaticComplexity only accept numbers in its argument.
+	 * The JPanel longMetodPanel creates the button long method which when
+	 * pressed, will execute the long method and the defect detection to 
+	 * the values previously defined.
+	 * The JPanel botoesFeatureEnvyPanel creates the JLabel atfd label and
+	 * the JLabel laa label and posteriorly changes the JTextField laa_txt and
+	 * JTextField atfd_txt, accepting integer or double numbers.
+	 * In The JPanel feautureEnvyButtonPanel the button Feature Envy is
+	 * created which will execute the feature envy and the defect detection
+	 * for the values defined by the user.
+	 * The JPanel indicatorsTable creates and adds the several tables to the frame.
+	 * 
+	 * @return JPanel with the left part of the Frame.
+	 */
+	private JPanel generateLeft() {
+		JPanel left = new JPanel(new GridLayout(4, 1));
+		JPanel[] subsLeft = createSubLeft(4);
 	
-		// Panel Esquerdo 1
-		// Panel Esquerdo 1 - Panel caixa de texto sobre o path do ficheiro	
 		JPanel filePathPanel = new JPanel();
 		filePath = new JTextField("Please Load An Excel file");
 		filePath.setHorizontalAlignment(JTextField.CENTER);
@@ -86,12 +119,11 @@ public class GUI {
 		filePath.setPreferredSize(new Dimension(700, 45));
 		filePathPanel.add(filePath);
 		
-		//Panel Esquerdo 1 - Panel com os Botoes Load e Show
 		JPanel fileChoser = new JPanel();
 		
-		JButton loadFileButton = createButton("Load File",200,50,15, 10);//Botao Load
+		JButton loadFileButton = createButton("Load File",200,50,15, 10);
 		loadFileButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {// ao ser clicado no botao para abrir um ficheiro excel
+			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
 				if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 					if (chooser.getSelectedFile().getAbsolutePath().endsWith(".xlsx")
@@ -111,8 +143,8 @@ public class GUI {
 				}
 			}
 		});
-		createButton("Show Excel",200,50,15,0).addActionListener(new ActionListener() {//Botao Show Exel
-			public void actionPerformed(ActionEvent e) {// abrir o programa excel com o ficheiro escolhido
+		createButton("Show Excel",200,50,15,0).addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				try {
 					Desktop.getDesktop().open(new File(app.getFileName()));
 				} catch (IOException e1) {
@@ -124,12 +156,10 @@ public class GUI {
 		fileChoser.add(loadFileButton, BorderLayout.WEST);
 		fileChoser.add(buttons[0], BorderLayout.EAST);
 		
-		subsEsquerdo[0].add(createTitlePanel("Data File:", 45, 450, 70));//adicao do titulo ao panel esquerdo nr1
-		subsEsquerdo[0].add(filePathPanel);
-		subsEsquerdo[0].add(fileChoser);
+		subsLeft[0].add(createTitlePanel("Data File:", 45, 450, 70));
+		subsLeft[0].add(filePathPanel);
+		subsLeft[0].add(fileChoser);
 		
-		//Panel Esquerdo 2
-		//Panel Esquerdo 2 - Panel Labels e caixas de input de text
 		JPanel parametrosLongMethodPanel = new JPanel();
 
 		Border border = BorderFactory.createLineBorder(Color.BLUE, 1);
@@ -147,7 +177,7 @@ public class GUI {
 		loc.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
-				if (!(Character.isDigit(c))) {// apenas aceita numeros
+				if (!(Character.isDigit(c))) {
 					keyEvent.consume();
 				}
 			}
@@ -166,17 +196,15 @@ public class GUI {
 		cyclo.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
-				if (!(Character.isDigit(c))) {// apenas aceita numeros
+				if (!(Character.isDigit(c))) {
 					keyEvent.consume();
 				}
 			}
 		});
 		
-		//Panel Esquerdo 2 - Panel botao Long Method
 		JPanel longMetodPanel = new JPanel();
-		createButton("Long Method",400,50,15,1).addActionListener(new ActionListener() {//Botão Long Method
-			public void actionPerformed(ActionEvent e) {// correr o long method e a detecao de defeitos para esses
-														// valores
+		createButton("Long Method",400,50,15,1).addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				if (!loc.getText().toString().equals("") && !cyclo.getText().toString().equals("")) {
 					int locValue = Integer.parseInt(loc.getText());
 					int cycloValue = Integer.parseInt(cyclo.getText());
@@ -196,11 +224,10 @@ public class GUI {
 		parametrosLongMethodPanel.add(cyclo);
 		longMetodPanel.add(buttons[1]);
 		
-		subsEsquerdo[1].add(createTitlePanel("Long Method:",40,450,70));//adicao do titulo ao panel esquerdo nr2
-		subsEsquerdo[1].add(parametrosLongMethodPanel);
-		subsEsquerdo[1].add(longMetodPanel);
+		subsLeft[1].add(createTitlePanel("Long Method:",40,450,70));
+		subsLeft[1].add(parametrosLongMethodPanel);
+		subsLeft[1].add(longMetodPanel);
 		
-		//Panel Esquerdo 3 - Panel Labels , inputs e JBoxCombo
 		JPanel botoesFeatureEnvyPanel = new JPanel();
 
 		JLabel atfd = new JLabel("ATFD >");
@@ -214,7 +241,7 @@ public class GUI {
 		atfd_txt.setPreferredSize(new Dimension(100, 50));
 		atfd_txt.setFont(new Font("Arial", Font.BOLD, 20));
 		atfd_txt.addKeyListener(new KeyAdapter() {
-			public void keyTyped(KeyEvent keyEvent) {// aceita numeros inteiros ou decimais
+			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
 				boolean exit = false;
 				if (c == KeyEvent.VK_PERIOD && atfd_txt.getText().contains(".")) {
@@ -233,8 +260,8 @@ public class GUI {
 		optionList.setSelectedIndex(1);
 		optionList.setPreferredSize(new Dimension(100, 50));
 		optionList.setFont(new Font("Arial", Font.BOLD, 17));
-		((JLabel) optionList.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);// centrar o texto na
-																							// JComboBox
+		((JLabel) optionList.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+		
 		JLabel laa = new JLabel("LAA <");
 		laa.setHorizontalAlignment(JLabel.CENTER);
 		laa.setBorder(border);
@@ -246,7 +273,7 @@ public class GUI {
 		laa_txt.setPreferredSize(new Dimension(100, 50));
 		laa_txt.setFont(new Font("Arial", Font.BOLD, 20));
 		laa_txt.addKeyListener(new KeyAdapter() {
-			public void keyTyped(KeyEvent keyEvent) {// aceita numeros inteiros ou decimais
+			public void keyTyped(KeyEvent keyEvent) {
 				char c = keyEvent.getKeyChar();
 				boolean exit = false;
 				if (c == KeyEvent.VK_PERIOD && laa_txt.getText().contains(".")) {
@@ -260,11 +287,9 @@ public class GUI {
 			}
 		});
 		
-		//Panel Esquerdo 3 - Panel botao Feauture Envy
 		JPanel feautureEnvyButtonPanel = new JPanel();
-		createButton("Feature Envy",400,50,15,2).addActionListener(new ActionListener() {//Botão Feauture Envy
-			public void actionPerformed(ActionEvent e) {// correr o feature_envy e a detecao de defeitos para esses
-														// valores
+		createButton("Feature Envy",400,50,15,2).addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				if(!atfd_txt.getText().toString().equals("") && !laa_txt.getText().toString().equals("")) {
 					String choice = optionList.getSelectedItem().toString();
 					app.feature_envy(Double.parseDouble(atfd_txt.getText()), choice, Double.parseDouble(laa_txt.getText()));
@@ -284,14 +309,12 @@ public class GUI {
 		botoesFeatureEnvyPanel.add(laa_txt);
 		feautureEnvyButtonPanel.add(buttons[2]);
 		
-		subsEsquerdo[2].add(createTitlePanel("Feature Envy:",40,450,70));//adicao do titulo ao panel esquerdo nr3
-		subsEsquerdo[2].add(botoesFeatureEnvyPanel);
-		subsEsquerdo[2].add(feautureEnvyButtonPanel);
+		subsLeft[2].add(createTitlePanel("Feature Envy:",40,450,70));
+		subsLeft[2].add(botoesFeatureEnvyPanel);
+		subsLeft[2].add(feautureEnvyButtonPanel);
 
-		//Panel Esquerdo 4
-		subsEsquerdo[3].add(createTitlePanel("Quality indicators:",40,450,70));//adicao do titulo ao panel esquerdo nr4
+		subsLeft[3].add(createTitlePanel("Quality indicators:",40,450,70));
 		
-		//Panel Esquerdo 4 - Panel Tabela
 		JPanel indicatorsTable = new JPanel(new GridLayout(0, 5));
 		indicatorsTable.setPreferredSize(new Dimension(760, 155));
 
@@ -316,15 +339,21 @@ public class GUI {
 		for(int i = 8; i<12;i++)
 			createTableJTextField(i,border,indicatorsTable);
 
-		subsEsquerdo[3].add(indicatorsTable);
+		subsLeft[3].add(indicatorsTable);
 
-		for(int i = 0;i<subsEsquerdo.length;i++)
-			esquerdo.add(subsEsquerdo[i]);
+		for(int i = 0;i<subsLeft.length;i++)
+			left.add(subsLeft[i]);
 		
-		return esquerdo;
+		return left;
 	}
 	
-	private JPanel[] createSubsEsquerdo(int n) {//Devolve um Vetor de paineis com uma border predefenida
+	
+	/**
+	 * Array of panels with a preferred border.
+	 * @param n size of the JPanel panels array.
+	 * @return panels array.
+	 */
+	private JPanel[] createSubLeft(int n) {
 		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
 		JPanel[] panels = new JPanel[n];
 		for(int i=0; i<n;i++) {
@@ -335,7 +364,15 @@ public class GUI {
 		return panels;
 	}
 	
-	private JPanel createTitlePanel(String string, int font, int x, int  y) {//Devolve um Painel com um titulo No meio
+	/**
+	 * Panel with a title in the middle with a set Text positioning 
+	 * @param string for the title panel
+	 * @param font for the title panel
+	 * @param x dimension
+	 * @param y dimension
+	 * @return JPanel with the Title Panel with a title in the middle
+	 */
+	private JPanel createTitlePanel(String string, int font, int x, int  y) {
 		JPanel panel = new JPanel();
 		
 		JLabel panelText = new JLabel(string, SwingConstants.CENTER);
@@ -347,6 +384,15 @@ public class GUI {
 		return panel;
 	}
 	
+	/**
+	 * Creates a button with the title, dimension and font options
+	 * @param name String name for the button
+	 * @param x dimension
+	 * @param y dimension
+	 * @param font font style for the button Text
+	 * @param pos iterator for the buttons array
+	 * @return JButton  
+	 */
 	public JButton createButton(String name,int x, int y, int font, int pos) {//Cria JButtons
 		JButton button = new JButton(name);
 		button.setHorizontalAlignment(JButton.CENTER);
@@ -359,6 +405,12 @@ public class GUI {
 		return button;
 	}
 	
+	/**
+	 * @param name for the new label
+	 * @param border 
+	 * @param font
+	 * @param table
+	 */
 	private void createAndAddTableJLabel(String name, Border border,int font, JPanel table){//Cria JLabel e adiciona a table
 		JLabel label = new JLabel(name);
 		if(font==11) {//definedRules é a unica label com font == 12
@@ -465,21 +517,9 @@ public class GUI {
 	}
 
 	public void clearDefectDetectionTable() {// quando é carregado um novo ficheiro tiram-se os resultados anteriores
-		textFields[0].setText("-");
-		textFields[1].setText("-");
-		textFields[2].setText("-");
-		textFields[3].setText("-");
-
-		textFields[4].setText("-");
-		textFields[5].setText("-");
-		textFields[6].setText("-");
-		textFields[7].setText("-");
-
-		textFields[8].setText("-");
-		textFields[9].setText("-");
-		textFields[10].setText("-");
-		textFields[11].setText("-");
-
+		for(int i = 0; i != 12; i++) {
+			textFields[i].setText("-");
+		}
 		definedRules.setText("Defined Rules");
 	}
 	
