@@ -5,13 +5,13 @@ package application;
  *
  */
 public class MethodData {
-	private int methodId;//id do metodo obtido do excel
-	private String packageName, className, methodName;// nome do package, da classe, e nome do metodo obtidos do excel
-	private int loc, cyclo;//numero de linhas de codigo e complexidade ciclomatica obtidos do excel
-	private double atfd, laa;//numero de atfd e laa obtidos do excel
-	private boolean is_long_method, is_feature_envy, iplasma, pmd;//valores de longMethod,feature_envy,iplasma e pmd obtidos do excel
-	private boolean is_long_method_by_rules, is_feature_envy_by_rules;//valores de longMethod e feature_envy para as regras definidas pelo utilizador
-
+	private int methodId;
+	private String packageName, className, methodName;
+	private int loc, cyclo;
+	private double atfd, laa;
+	private boolean is_long_method, is_feature_envy, iplasma, pmd;
+	private boolean is_long_method_by_rules, is_feature_envy_by_rules;
+	
 	public MethodData(int methodId, String packageName, String className, String methodName, int loc, int cyclo,
 			double atfd, double laa, boolean is_long_method, boolean is_feature_envy, boolean iplasma, boolean pmd) {
 		this.methodId = methodId;
@@ -31,7 +31,7 @@ public class MethodData {
 	/**
 	 * Defines the value of the field that points if the method 
 	 * is or isn't a long method by the rules specified
-	 * @param sets the value of the specified field
+	 * @param set the value of the specified field
 	 */
 	public void setIs_long_method_by_rules(boolean set) {
 		is_long_method_by_rules = set;
@@ -40,7 +40,7 @@ public class MethodData {
 	/**
 	 * Defines the value of the field that points if the method 
 	 * is or isn't a feature envy method by the rules specified
-	 * @param sets the value of the specified field
+	 * @param set the value of the specified field
 	 */
 	public void setIs_feature_envy_by_rules(boolean set) {
 		is_feature_envy_by_rules = set;

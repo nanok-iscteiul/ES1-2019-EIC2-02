@@ -57,7 +57,7 @@ public class Application {
 	 * 
 	 * @param locThreshold the threshold for the number of lines of code of method
 	 * @param cycloThreshold the threshold for the cyclomatic complexity of the method
-	 * @see application.MethodData.setIs_long_method_by_rules(boolean)
+	 * @see application.MethodData#setIs_long_method_by_rules(boolean)
 	 * 
 	 */
 	public void longMethod(int locThreshold, int cycloThreshold) {
@@ -78,7 +78,7 @@ public class Application {
 	 * @param atfdThreshold the threshold for the number of method accesses to methods of other classes
 	 * @param laaThreshold the threshold for the number of method accesses to attributes of the class itself
 	 * @param andOr ("and" or "or") a string to select whether both of the thresholds needs to be met or only one
-	 * @see application.MethodData.setIs_feature_envy_by_rules(boolean)
+	 * @see application.MethodData#setIs_feature_envy_by_rules(boolean)
 	 */
 	public void feature_envy(double atfdThreshold, double laaThreshold,  String andOr) {
 		for (MethodData m : methodsData) {
@@ -101,8 +101,8 @@ public class Application {
 	/**
 	 * Detects defects in each method in the methods list, as defined in the excel file.
 	 * 
-	 * @see checkErrorIdentifiers(boolean, boolean, int[])
-	 * @see gui.GUI.receiveOutputDefectDetection(String, int[])
+	 * @see application.Application#checkErrorIdentifiers(boolean, boolean, int[])
+	 * @see gui.GUI#receiveOutputDefectDetection(int[], int[])
 	 */
 	public void defectDetection() {
 		int[] countersIPlasma = { 0, 0, 0, 0 };// dci, dii, adci, adii, respetivamente para cada posicao do vetor
@@ -120,8 +120,8 @@ public class Application {
 	 * Informs the graphical interface of the counters.
 	 * 
 	 * @param number (0 or 1) identifies if checking for defects in long method(0) or feature envy(1)
-	 * @see checkErrorIdentifiers(boolean, boolean, int[])
-	 * @see gui.GUI.receiveOutputDefectDetectionDefinedRules(String, int[])
+	 * @see application.Application#checkErrorIdentifiers(boolean, boolean, int[])
+	 * @see gui.GUI#receiveOutputDefectDetectionDefinedRules(String, int[])
 	 */
 	public void defectDetectionDefinedRules(int number) {
 		int[] counters = { 0, 0, 0, 0 };
@@ -145,7 +145,7 @@ public class Application {
 	 * @param islong boolean to define whether the method is long(true) of feature envy(false)
 	 * @param iplasmaOrPmdOrDefRules boolean to additively specify which defect counter is increment
 	 * @param counters the array with the counters of defects
-	 * @return 
+	 * @return the update counters array
 	 */
 	private int[] checkErrorIdentifiers(boolean islong, boolean iplasmaOrPmdOrDefRules, int[] counters) {
 		if (islong == true && iplasmaOrPmdOrDefRules == true) {

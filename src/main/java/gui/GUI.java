@@ -403,7 +403,7 @@ public class GUI {
 	 * @param x dimension
 	 * @param y dimension
 	 * @param font letters style for the button Text
-	 * @param pos iterator for the buttons array
+	 * @param pos the position for the buttons array
 	 * @return the JButton with the attributes passed
 	 */
 	public JButton createButton(String name, int x, int y, int font, int pos) {
@@ -443,9 +443,9 @@ public class GUI {
 	/**
 	 * In the array textFields it is created a JTextField
 	 * and adds it to the corresponding table.
-	 * @param pos iterator
-	 * @param border size.
-	 * @param indicatorsTable
+	 * @param pos the position of the text fields
+	 * @param border the border to be added in the panel
+	 * @param indicatorsTable the panel to have the border added
 	 */
 	private void createTableJTextField(int pos, Border border, JPanel indicatorsTable) {
 		JTextField field = new JTextField("-");
