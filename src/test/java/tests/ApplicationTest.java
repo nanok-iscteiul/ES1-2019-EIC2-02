@@ -67,7 +67,7 @@ class ApplicationTest {
 
 	@Test
 	void testLoadFile() {
-		a.setPath("C:\\Users\\nicha\\Desktop\\Long-Method.xlsx");
+		a.setPath("Long-Method.xlsx");
 		a.loadFile();
 	}
 

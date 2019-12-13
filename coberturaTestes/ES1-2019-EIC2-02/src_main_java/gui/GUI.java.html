@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>GUI.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">AllTests (1) (13/dez/2019 14:41:44)</a> &gt; <a href="../../index.html" class="el_group">ES1-2019-EIC2-02</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">gui</a> &gt; <span class="el_source">GUI.java</span></div><h1>GUI.java</h1><pre class="source lang-java linenums">package gui;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+import javax.swing.border.Border;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+import application.Application;
+import application.MethodData;
+
+/**
+ * @author ESI-2019-EIC2-02
+ *
+ */
+public class GUI {
+
+	private Application app;
+	private JFrame frame;
+	private JTextField filePath;
+	private JButton[] buttons;
+	private JTextField loc;
+	private JTextField cyclo;
+	private JTextField laa_txt;
+	private JTextField atfd_txt;
+	private JComboBox&lt;String&gt; optionList;
+	/**
+	 * Array containing several JTextField boxes.
+	 */
+	private JTextField [] textFields;
+	/**
+	 * Graphical user interface table with excel data and defined rules.
+	 */
+	private DefaultTableModel tableModel;
+	/**
+	 * Label for defect detection of defined rules.
+	 */
+	private JLabel definedRules;
+
+	/**
+	 * Class constructor.
+	 * @param app the application this graphical interfaces refers to.
+	 */
+<span class="fc" id="L70">	public GUI(Application app) {</span>
+<span class="fc" id="L71">		this.app = app;</span>
+<span class="fc" id="L72">		frame = new JFrame(&quot;Aplicação&quot;);</span>
+<span class="fc" id="L73">		createFrame();</span>
+<span class="fc" id="L74">		addFields();</span>
+<span class="fc" id="L75">	}</span>
+
+	/**
+	 *  Creates the frame, requiring a minimum size defined as the maximum
+	 *  size of the frame of the actual workspace.
+	 */
+	private void createFrame() {
+<span class="fc" id="L82">		frame.setMinimumSize(new Dimension((int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth(),</span>
+<span class="fc" id="L83">				(int) GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight()));</span>
+<span class="fc" id="L84">		frame.setResizable(false);</span>
+<span class="fc" id="L85">		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);</span>
+<span class="fc" id="L86">	}</span>
+
+	/**
+	 * Creates the left and right panel, adding them to the frame.
+	 * It also creates an array of buttons that will be enabled or disabled and 
+	 * JTextFields that could be altered in the future by the user.
+	 */
+	private void addFields() {
+<span class="fc" id="L94">		buttons = new JButton[3];</span>
+<span class="fc" id="L95">		textFields = new JTextField[12];</span>
+<span class="fc" id="L96">		frame.setContentPane(new CustomGridBag(generateLeft(), generateRight()));</span>
+<span class="fc" id="L97">		frame.setVisible(true);</span>
+
+<span class="fc" id="L99">	}</span>
+	/**
+	 * Creates the left part of the Frame, including the fileChoser panel, 
+	 * parametrosLongMethodPanel panel, botoesFeatureEnvyPanel panel,
+	 * feautureEnvyButtonPanel panel and indicatorsTable panel with all the
+	 * labels, text field boxes, buttons and option panes associated to them.
+	 * In the fileChoser panel, when the load button is selected it opens
+	 * an Excel file, while when the show button is selected it
+	 * opens the Excel program with the selected file.
+	 * In the parametrosLongMethodPanel panel, the JLabel linesOfCode as well
+	 * as the JLabel cyclomaticComplexity only accept numbers in its argument.
+	 * The JPanel longMetodPanel creates the button long method which when
+	 * pressed, will execute the long method and the defect detection to 
+	 * the values previously defined.
+	 * The JPanel botoesFeatureEnvyPanel creates the JLabel atfd label and
+	 * the JLabel laa label and posteriorly changes the JTextField laa_txt and
+	 * JTextField atfd_txt, accepting integer or double numbers.
+	 * In The JPanel feautureEnvyButtonPanel the button Feature Envy is
+	 * created which will execute the feature envy and the defect detection
+	 * for the values defined by the user.
+	 * The JPanel indicatorsTable creates and adds the several tables to the frame.
+	 * 
+	 * @return the JPanel with the left part of the Frame.
+	 */
+	private JPanel generateLeft() {
+<span class="fc" id="L124">		JPanel left = new JPanel(new GridLayout(4, 1));</span>
+<span class="fc" id="L125">		JPanel[] subsLeft = createSubLeft(4);</span>
+	
+<span class="fc" id="L127">		JPanel filePathPanel = new JPanel();</span>
+<span class="fc" id="L128">		filePath = new JTextField(&quot;Please Load An Excel file&quot;);</span>
+<span class="fc" id="L129">		filePath.setHorizontalAlignment(JTextField.CENTER);</span>
+<span class="fc" id="L130">		filePath.setEditable(false);</span>
+<span class="fc" id="L131">		filePath.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+<span class="fc" id="L132">		filePath.setPreferredSize(new Dimension(700, 45));</span>
+<span class="fc" id="L133">		filePathPanel.add(filePath);</span>
+		
+<span class="fc" id="L135">		JPanel fileChoser = new JPanel();</span>
+		
+<span class="fc" id="L137">		JButton loadFileButton = createButton(&quot;Load File&quot;,200,50,15, 10);</span>
+<span class="fc" id="L138">		loadFileButton.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L140">				JFileChooser chooser = new JFileChooser();</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">				if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">					if (chooser.getSelectedFile().getAbsolutePath().endsWith(&quot;.xlsx&quot;)</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">							|| chooser.getSelectedFile().getAbsolutePath().endsWith(&quot;.xls&quot;)) {</span>
+<span class="nc" id="L144">						app.setPath(chooser.getSelectedFile().getAbsolutePath());</span>
+<span class="nc" id="L145">						filePath.setText(chooser.getSelectedFile().getName());</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">						for(int i=0;i&lt;buttons.length;i++)</span>
+<span class="nc" id="L147">							buttons[i].setEnabled(true);</span>
+<span class="nc" id="L148">						clearDefectDetectionTable();</span>
+<span class="nc" id="L149">						app.loadFile();</span>
+<span class="nc" id="L150">						fillTable();</span>
+<span class="nc" id="L151">						app.defectDetection();</span>
+<span class="nc" id="L152">					} else {</span>
+<span class="nc" id="L153">						JOptionPane.showMessageDialog(null, &quot;Escolha um ficheiro excel&quot;, &quot;Erro ao abrir ficheiro&quot;,</span>
+<span class="nc" id="L154">								JOptionPane.INFORMATION_MESSAGE);</span>
+					}
+				}
+<span class="nc" id="L157">			}</span>
+		});
+<span class="fc" id="L159">		createButton(&quot;Show Excel&quot;,200,50,15,0).addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+				try {
+<span class="nc" id="L162">					Desktop.getDesktop().open(new File(app.getFileName()));</span>
+<span class="nc" id="L163">				} catch (IOException e1) {</span>
+<span class="nc" id="L164">					System.out.println(&quot;Erro ao abrir ficheiro Excel&quot;);</span>
+				}
+<span class="nc" id="L166">			}</span>
+		});
+
+<span class="fc" id="L169">		fileChoser.add(loadFileButton, BorderLayout.WEST);</span>
+<span class="fc" id="L170">		fileChoser.add(buttons[0], BorderLayout.EAST);</span>
+		
+<span class="fc" id="L172">		subsLeft[0].add(createTitlePanel(&quot;Data File:&quot;, 45, 450, 70));</span>
+<span class="fc" id="L173">		subsLeft[0].add(filePathPanel);</span>
+<span class="fc" id="L174">		subsLeft[0].add(fileChoser);</span>
+		
+<span class="fc" id="L176">		JPanel parametrosLongMethodPanel = new JPanel();</span>
+
+<span class="fc" id="L178">		Border border = BorderFactory.createLineBorder(Color.BLUE, 1);</span>
+
+<span class="fc" id="L180">		JLabel linesOfCode = new JLabel(&quot;Lines of code &gt;&quot;);</span>
+<span class="fc" id="L181">		linesOfCode.setHorizontalAlignment(JLabel.CENTER);</span>
+<span class="fc" id="L182">		linesOfCode.setBorder(border);</span>
+<span class="fc" id="L183">		linesOfCode.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+<span class="fc" id="L184">		linesOfCode.setPreferredSize(new Dimension(220, 50));</span>
+
+<span class="fc" id="L186">		loc = new JTextField(&quot;80&quot;);</span>
+<span class="fc" id="L187">		loc.setHorizontalAlignment(JTextField.CENTER);</span>
+<span class="fc" id="L188">		loc.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+<span class="fc" id="L189">		loc.setPreferredSize(new Dimension(100, 50));</span>
+<span class="fc" id="L190">		loc.addKeyListener(new KeyAdapter() {</span>
+			public void keyTyped(KeyEvent keyEvent) {
+<span class="nc" id="L192">				char c = keyEvent.getKeyChar();</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">				if (!(Character.isDigit(c))) {</span>
+<span class="nc" id="L194">					keyEvent.consume();</span>
+				}
+<span class="nc" id="L196">			}</span>
+		});
+
+<span class="fc" id="L199">		JLabel cyclomaticComplexity = new JLabel(&quot;Cyclomatic Complexity &gt;&quot;);</span>
+<span class="fc" id="L200">		cyclomaticComplexity.setHorizontalAlignment(JLabel.CENTER);</span>
+<span class="fc" id="L201">		cyclomaticComplexity.setBorder(border);</span>
+<span class="fc" id="L202">		cyclomaticComplexity.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+<span class="fc" id="L203">		cyclomaticComplexity.setPreferredSize(new Dimension(240, 50));</span>
+
+<span class="fc" id="L205">		cyclo = new JTextField(&quot;10&quot;);</span>
+<span class="fc" id="L206">		cyclo.setHorizontalAlignment(JTextField.CENTER);</span>
+<span class="fc" id="L207">		cyclo.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+<span class="fc" id="L208">		cyclo.setPreferredSize(new Dimension(100, 50));</span>
+<span class="fc" id="L209">		cyclo.addKeyListener(new KeyAdapter() {</span>
+			public void keyTyped(KeyEvent keyEvent) {
+<span class="nc" id="L211">				char c = keyEvent.getKeyChar();</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">				if (!(Character.isDigit(c))) {</span>
+<span class="nc" id="L213">					keyEvent.consume();</span>
+				}
+<span class="nc" id="L215">			}</span>
+		});
+		
+<span class="fc" id="L218">		JPanel longMetodPanel = new JPanel();</span>
+<span class="fc" id="L219">		createButton(&quot;Long Method&quot;,400,50,15,1).addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="nc bnc" id="L221" title="All 4 branches missed.">				if (!loc.getText().toString().equals(&quot;&quot;) &amp;&amp; !cyclo.getText().toString().equals(&quot;&quot;)) {</span>
+<span class="nc" id="L222">					int locValue = Integer.parseInt(loc.getText());</span>
+<span class="nc" id="L223">					int cycloValue = Integer.parseInt(cyclo.getText());</span>
+<span class="nc" id="L224">					app.longMethod(locValue, cycloValue);</span>
+<span class="nc" id="L225">					fillLongMethod();</span>
+<span class="nc" id="L226">					app.defectDetectionDefinedRules(0);</span>
+<span class="nc" id="L227">				}</span>
+				else {
+<span class="nc" id="L229">					JOptionPane.showMessageDialog(null,&quot;Introduza um input no quadro Long Method!&quot;,&quot;Input invalido&quot;,</span>
+<span class="nc" id="L230">							JOptionPane.INFORMATION_MESSAGE);</span>
+				}
+<span class="nc" id="L232">			}</span>
+		});
+<span class="fc" id="L234">		parametrosLongMethodPanel.add(linesOfCode);</span>
+<span class="fc" id="L235">		parametrosLongMethodPanel.add(loc);</span>
+<span class="fc" id="L236">		parametrosLongMethodPanel.add(cyclomaticComplexity);</span>
+<span class="fc" id="L237">		parametrosLongMethodPanel.add(cyclo);</span>
+<span class="fc" id="L238">		longMetodPanel.add(buttons[1]);</span>
+		
+<span class="fc" id="L240">		subsLeft[1].add(createTitlePanel(&quot;Long Method:&quot;,40,450,70));</span>
+<span class="fc" id="L241">		subsLeft[1].add(parametrosLongMethodPanel);</span>
+<span class="fc" id="L242">		subsLeft[1].add(longMetodPanel);</span>
+		
+<span class="fc" id="L244">		JPanel botoesFeatureEnvyPanel = new JPanel();</span>
+
+<span class="fc" id="L246">		JLabel atfd = new JLabel(&quot;ATFD &gt;&quot;);</span>
+<span class="fc" id="L247">		atfd.setHorizontalAlignment(JLabel.CENTER);</span>
+<span class="fc" id="L248">		atfd.setBorder(border);</span>
+<span class="fc" id="L249">		atfd.setPreferredSize(new Dimension(100, 50));</span>
+<span class="fc" id="L250">		atfd.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+
+<span class="fc" id="L252">		atfd_txt = new JTextField(&quot;4&quot;);</span>
+<span class="fc" id="L253">		atfd_txt.setHorizontalAlignment(JTextField.CENTER);</span>
+<span class="fc" id="L254">		atfd_txt.setPreferredSize(new Dimension(100, 50));</span>
+<span class="fc" id="L255">		atfd_txt.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+<span class="fc" id="L256">		atfd_txt.addKeyListener(new KeyAdapter() {</span>
+			public void keyTyped(KeyEvent keyEvent) {
+<span class="nc" id="L258">				char c = keyEvent.getKeyChar();</span>
+<span class="nc" id="L259">				boolean exit = false;</span>
+<span class="nc bnc" id="L260" title="All 4 branches missed.">				if (c == KeyEvent.VK_PERIOD &amp;&amp; atfd_txt.getText().contains(&quot;.&quot;)) {</span>
+<span class="nc" id="L261">					keyEvent.consume();</span>
+<span class="nc" id="L262">					exit = true;</span>
+				}
+<span class="nc bnc" id="L264" title="All 4 branches missed.">				if (c == KeyEvent.VK_PERIOD &amp;&amp; !atfd_txt.getText().contains(&quot;.&quot;))</span>
+<span class="nc" id="L265">					exit = true;</span>
+<span class="nc bnc" id="L266" title="All 4 branches missed.">				if (!(Character.isDigit(c)) &amp;&amp; !exit)</span>
+<span class="nc" id="L267">					keyEvent.consume();</span>
+<span class="nc" id="L268">			}</span>
+		});
+
+<span class="fc" id="L271">		String[] option = { &quot;and&quot;, &quot;or&quot; };</span>
+<span class="fc" id="L272">		optionList = new JComboBox&lt;String&gt;(option);</span>
+<span class="fc" id="L273">		optionList.setSelectedIndex(1);</span>
+<span class="fc" id="L274">		optionList.setPreferredSize(new Dimension(100, 50));</span>
+<span class="fc" id="L275">		optionList.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 17));</span>
+<span class="fc" id="L276">		((JLabel) optionList.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);</span>
+		
+<span class="fc" id="L278">		JLabel laa = new JLabel(&quot;LAA &lt;&quot;);</span>
+<span class="fc" id="L279">		laa.setHorizontalAlignment(JLabel.CENTER);</span>
+<span class="fc" id="L280">		laa.setBorder(border);</span>
+<span class="fc" id="L281">		laa.setPreferredSize(new Dimension(100, 50));</span>
+<span class="fc" id="L282">		laa.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+
+<span class="fc" id="L284">		laa_txt = new JTextField(&quot;0.42&quot;);</span>
+<span class="fc" id="L285">		laa_txt.setHorizontalAlignment(JTextField.CENTER);</span>
+<span class="fc" id="L286">		laa_txt.setPreferredSize(new Dimension(100, 50));</span>
+<span class="fc" id="L287">		laa_txt.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+<span class="fc" id="L288">		laa_txt.addKeyListener(new KeyAdapter() {</span>
+			public void keyTyped(KeyEvent keyEvent) {
+<span class="nc" id="L290">				char c = keyEvent.getKeyChar();</span>
+<span class="nc" id="L291">				boolean exit = false;</span>
+<span class="nc bnc" id="L292" title="All 4 branches missed.">				if (c == KeyEvent.VK_PERIOD &amp;&amp; laa_txt.getText().contains(&quot;.&quot;)) {</span>
+<span class="nc" id="L293">					keyEvent.consume();</span>
+<span class="nc" id="L294">					exit = true;</span>
+				}
+<span class="nc bnc" id="L296" title="All 4 branches missed.">				if (c == KeyEvent.VK_PERIOD &amp;&amp; !laa_txt.getText().contains(&quot;.&quot;))</span>
+<span class="nc" id="L297">					exit = true;</span>
+<span class="nc bnc" id="L298" title="All 4 branches missed.">				if (!(Character.isDigit(c)) &amp;&amp; !exit)</span>
+<span class="nc" id="L299">					keyEvent.consume();</span>
+<span class="nc" id="L300">			}</span>
+		});
+		
+<span class="fc" id="L303">		JPanel feautureEnvyButtonPanel = new JPanel();</span>
+<span class="fc" id="L304">		createButton(&quot;Feature Envy&quot;,400,50,15,2).addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="nc bnc" id="L306" title="All 4 branches missed.">				if(!atfd_txt.getText().toString().equals(&quot;&quot;) &amp;&amp; !laa_txt.getText().toString().equals(&quot;&quot;)) {</span>
+<span class="nc" id="L307">					String choice = optionList.getSelectedItem().toString();</span>
+<span class="nc" id="L308">					app.feature_envy(Double.parseDouble(atfd_txt.getText()), Double.parseDouble(laa_txt.getText()), choice);</span>
+<span class="nc" id="L309">					fillFeature_envy();</span>
+<span class="nc" id="L310">					app.defectDetectionDefinedRules(1);</span>
+<span class="nc" id="L311">				}</span>
+				else {
+<span class="nc" id="L313">					JOptionPane.showMessageDialog(null,&quot;Introduza um input no quadro Feature Envy!&quot;,&quot;Input invalido&quot;,</span>
+<span class="nc" id="L314">							JOptionPane.INFORMATION_MESSAGE);</span>
+				}
+<span class="nc" id="L316">			}</span>
+		});
+<span class="fc" id="L318">		botoesFeatureEnvyPanel.add(atfd);</span>
+<span class="fc" id="L319">		botoesFeatureEnvyPanel.add(atfd_txt);</span>
+<span class="fc" id="L320">		botoesFeatureEnvyPanel.add(optionList);</span>
+<span class="fc" id="L321">		botoesFeatureEnvyPanel.add(laa);</span>
+<span class="fc" id="L322">		botoesFeatureEnvyPanel.add(laa_txt);</span>
+<span class="fc" id="L323">		feautureEnvyButtonPanel.add(buttons[2]);</span>
+		
+<span class="fc" id="L325">		subsLeft[2].add(createTitlePanel(&quot;Feature Envy:&quot;,40,450,70));</span>
+<span class="fc" id="L326">		subsLeft[2].add(botoesFeatureEnvyPanel);</span>
+<span class="fc" id="L327">		subsLeft[2].add(feautureEnvyButtonPanel);</span>
+
+<span class="fc" id="L329">		subsLeft[3].add(createTitlePanel(&quot;Quality indicators:&quot;,40,450,70));</span>
+		
+<span class="fc" id="L331">		JPanel indicatorsTable = new JPanel(new GridLayout(0, 5));</span>
+<span class="fc" id="L332">		indicatorsTable.setPreferredSize(new Dimension(760, 155));</span>
+
+<span class="fc" id="L334">		createAndAddTableJLabel(&quot;&quot;,border,20,indicatorsTable);</span>
+<span class="fc" id="L335">		createAndAddTableJLabel(&quot;DCI&quot;,border,20,indicatorsTable);</span>
+<span class="fc" id="L336">		createAndAddTableJLabel(&quot;DII&quot;,border,20,indicatorsTable);</span>
+<span class="fc" id="L337">		createAndAddTableJLabel(&quot;ADCI&quot;,border,20,indicatorsTable);</span>
+<span class="fc" id="L338">		createAndAddTableJLabel(&quot;ADII&quot;,border,20,indicatorsTable);</span>
+		
+<span class="fc" id="L340">		createAndAddTableJLabel(&quot;IPlasma&quot;,border,13,indicatorsTable);</span>
+
+<span class="fc bfc" id="L342" title="All 2 branches covered.">		for(int i = 0; i&lt;4;i++)</span>
+<span class="fc" id="L343">			createTableJTextField(i,border,indicatorsTable);</span>
+
+<span class="fc" id="L345">		createAndAddTableJLabel(&quot;PMD&quot;,border,13,indicatorsTable);</span>
+		
+<span class="fc bfc" id="L347" title="All 2 branches covered.">		for(int i = 4; i&lt;8;i++)</span>
+<span class="fc" id="L348">			createTableJTextField(i,border,indicatorsTable);</span>
+
+<span class="fc" id="L350">		createAndAddTableJLabel(&quot;Defined Rules&quot;,border,11,indicatorsTable);</span>
+		
+<span class="fc bfc" id="L352" title="All 2 branches covered.">		for(int i = 8; i&lt;12;i++)</span>
+<span class="fc" id="L353">			createTableJTextField(i,border,indicatorsTable);</span>
+
+<span class="fc" id="L355">		subsLeft[3].add(indicatorsTable);</span>
+
+<span class="fc bfc" id="L357" title="All 2 branches covered.">		for(int i = 0;i&lt;subsLeft.length;i++)</span>
+<span class="fc" id="L358">			left.add(subsLeft[i]);</span>
+		
+<span class="fc" id="L360">		return left;</span>
+	}
+	
+	
+	/**
+	 * Array of panels with a preferred border.
+	 * @param n size of the JPanel panels array.
+	 * @return the panels array.
+	 */
+	private JPanel[] createSubLeft(int n) {
+<span class="fc" id="L370">		Border raisedbevel = BorderFactory.createRaisedBevelBorder();</span>
+<span class="fc" id="L371">		JPanel[] panels = new JPanel[n];</span>
+<span class="fc bfc" id="L372" title="All 2 branches covered.">		for(int i=0; i&lt;n;i++) {</span>
+<span class="fc" id="L373">			JPanel panel = new JPanel(new FlowLayout());</span>
+<span class="fc" id="L374">			panel.setBorder(raisedbevel);</span>
+<span class="fc" id="L375">			panels[i] = panel;</span>
+		}
+<span class="fc" id="L377">		return panels;</span>
+	}
+	
+	/**
+	 * Panel with a title in the middle with a set Text positioning 
+	 * @param string for the title panel
+	 * @param font for the title panel
+	 * @param x dimension
+	 * @param y dimension
+	 * @return the JPanel with the Title Panel with the title in the middle
+	 */
+	private JPanel createTitlePanel(String string, int font, int x, int  y) {
+<span class="fc" id="L389">		JPanel panel = new JPanel();</span>
+		
+<span class="fc" id="L391">		JLabel panelText = new JLabel(string, SwingConstants.CENTER);</span>
+<span class="fc" id="L392">		panelText.setFont(new Font(&quot;Arial&quot;, Font.BOLD, font));</span>
+
+<span class="fc" id="L394">		panel.add(panelText);</span>
+<span class="fc" id="L395">		panel.setPreferredSize(new Dimension(x, y));</span>
+		
+<span class="fc" id="L397">		return panel;</span>
+	}
+	
+	/**
+	 * Creates a button with the title, dimension and font options.
+	 * @param name String name for the button.
+	 * @param x dimension
+	 * @param y dimension
+	 * @param font letters style for the button Text
+	 * @param pos the position for the buttons array
+	 * @return the JButton with the attributes passed
+	 */
+	public JButton createButton(String name, int x, int y, int font, int pos) {
+<span class="fc" id="L410">		JButton button = new JButton(name);</span>
+<span class="fc" id="L411">		button.setHorizontalAlignment(JButton.CENTER);</span>
+<span class="fc" id="L412">		button.setPreferredSize(new Dimension(x, y));</span>
+<span class="fc" id="L413">		button.setFont(new Font(&quot;Arial&quot;, Font.BOLD, font));</span>
+<span class="fc bfc" id="L414" title="All 2 branches covered.">		if(pos&lt;buttons.length) {</span>
+<span class="fc" id="L415">			buttons[pos] = button;</span>
+<span class="fc" id="L416">			button.setEnabled(false);</span>
+		}
+<span class="fc" id="L418">		return button;</span>
+	}
+	
+	/**
+	 * Creates and adds a table to a determined panel. The definedRules
+	 * is the only label in which the font is equal to eleven.
+	 * If so the label points to the definedRules. 
+	 * @param name for the new label.
+	 * @param border size.
+	 * @param font letters style for the table JLabel.
+	 * @param table to be added to the panel.
+	 */
+	private void createAndAddTableJLabel(String name, Border border, int font, JPanel table){
+<span class="fc" id="L431">		JLabel label = new JLabel(name);</span>
+<span class="fc bfc" id="L432" title="All 2 branches covered.">		if(font == 11) {</span>
+<span class="fc" id="L433">			definedRules = new JLabel(&quot;Defined Rules&quot;);</span>
+<span class="fc" id="L434">			label = definedRules;</span>
+		}	
+<span class="fc" id="L436">		label.setHorizontalAlignment(JTextField.CENTER);</span>
+<span class="fc" id="L437">		label.setBorder(border);</span>
+<span class="fc" id="L438">		label.setFont(new Font(&quot;Arial&quot;, Font.BOLD, font));</span>
+<span class="fc" id="L439">		table.add(label);</span>
+		
+<span class="fc" id="L441">	}</span>
+	
+	/**
+	 * In the array textFields it is created a JTextField
+	 * and adds it to the corresponding table.
+	 * @param pos the position of the text fields
+	 * @param border the border to be added in the panel
+	 * @param indicatorsTable the panel to have the border added
+	 */
+	private void createTableJTextField(int pos, Border border, JPanel indicatorsTable) {
+<span class="fc" id="L451">		JTextField field = new JTextField(&quot;-&quot;);</span>
+<span class="fc" id="L452">		field.setHorizontalAlignment(JTextField.CENTER);</span>
+<span class="fc" id="L453">		field.setEditable(false);</span>
+<span class="fc" id="L454">		field.setBorder(border);</span>
+<span class="fc" id="L455">		field.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+<span class="fc" id="L456">		indicatorsTable.add(field);</span>
+<span class="fc" id="L457">		textFields[pos] = field;</span>
+		
+<span class="fc" id="L459">	}</span>
+	
+	/**
+	 * Right part of the frame. It is create a String array with all the 
+	 * names for the column and then adds it to the frame, posteriorly
+	 * setting the columns sizes, and its corresponding maximum and minimum widths.
+	 * 
+	 * @return the JPanel with the right part of the frame.
+	 */
+	private JPanel generateRight() {
+<span class="fc" id="L469">		JPanel right = new JPanel(new GridLayout());</span>
+<span class="fc" id="L470">		String[] col = { &quot;MethodId&quot;, &quot;LOC&quot;, &quot;CYCLO&quot;, &quot;ATFD&quot;, &quot;LAA&quot;, &quot;is long method&quot;, &quot;iPlasma&quot;, &quot;PMD&quot;,</span>
+<span class="fc" id="L471">				&quot;is feature envy&quot;, &quot;is long method by defined rules&quot;, &quot;is feature envy by defined rules&quot; };</span>
+<span class="fc" id="L472">		tableModel = new DefaultTableModel(col, 0);</span>
+<span class="fc" id="L473">		JTable table = new JTable(tableModel);</span>
+<span class="fc bfc" id="L474" title="All 2 branches covered.">		for (int i = 0; i &lt; 5; i++) {</span>
+<span class="fc" id="L475">			table.getColumn(col[i]).setMinWidth(70);</span>
+<span class="fc" id="L476">			table.getColumn(col[i]).setMaxWidth(70);</span>
+		}
+<span class="fc" id="L478">		table.getColumn(col[5]).setMinWidth(100);</span>
+<span class="fc" id="L479">		table.getColumn(col[5]).setMaxWidth(100);</span>
+<span class="fc" id="L480">		table.getColumn(col[6]).setMinWidth(65);</span>
+<span class="fc" id="L481">		table.getColumn(col[6]).setMaxWidth(65);</span>
+<span class="fc" id="L482">		table.getColumn(col[7]).setMinWidth(65);</span>
+<span class="fc" id="L483">		table.getColumn(col[7]).setMaxWidth(65);</span>
+<span class="fc" id="L484">		table.getColumn(col[8]).setMinWidth(100);</span>
+<span class="fc" id="L485">		table.getColumn(col[8]).setMaxWidth(100);</span>
+<span class="fc" id="L486">		table.getColumn(col[9]).setMinWidth(180);</span>
+<span class="fc" id="L487">		table.getColumn(col[9]).setMaxWidth(180);</span>
+<span class="fc" id="L488">		table.getColumn(col[10]).setMinWidth(195);</span>
+<span class="fc" id="L489">		table.getColumn(col[10]).setMaxWidth(195);</span>
+
+<span class="fc" id="L491">		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();</span>
+<span class="fc" id="L492">		centerRenderer.setHorizontalAlignment(JLabel.CENTER);</span>
+
+<span class="fc bfc" id="L494" title="All 2 branches covered.">		for (int i = 0; i &lt; col.length; i++) {</span>
+<span class="fc" id="L495">			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);</span>
+		}
+
+<span class="fc" id="L498">		table.setEnabled(false);</span>
+
+<span class="fc" id="L500">		right.add(new JScrollPane(table));</span>
+		
+<span class="fc" id="L502">		return right;</span>
+	}
+
+	/**
+	 * Firstly, sets the row count to 0 and after it fills the table
+	 * accordingly, with the file uploaded.
+	 */
+	public void fillTable() {
+<span class="fc" id="L510">		tableModel.setRowCount(0);</span>
+<span class="pc bpc" id="L511" title="1 of 2 branches missed.">		for (MethodData m : app.getMethodsData()) {</span>
+<span class="nc" id="L512">			Object[] aux = { m.getMethodId(), m.getLoc(), m.getCyclo(), m.getAtfd(), m.getLaa(), m.getIs_long_method(),</span>
+<span class="nc" id="L513">					m.getIplasma(), m.getPmd(), m.getIs_feature_envy() };</span>
+<span class="nc" id="L514">			tableModel.addRow(aux);</span>
+		}
+<span class="fc" id="L516">	}</span>
+
+	/**
+	 * Fills the is long method column.
+	 */
+	private void fillLongMethod() {
+<span class="nc bnc" id="L522" title="All 2 branches missed.">		for (MethodData m : app.getMethodsData()) {</span>
+<span class="nc" id="L523">			tableModel.setValueAt(m.getIs_long_method_by_rules(), m.getMethodId() - 1, 9);</span>
+		}
+<span class="nc" id="L525">	}</span>
+
+	/**
+	 * Fills the column of the is feature envy by iterating the
+	 * getsMethodsData and posteriorly setting the corresponding values.
+	 */
+	private void fillFeature_envy() {
+<span class="nc bnc" id="L532" title="All 2 branches missed.">		for (MethodData m : app.getMethodsData()) {</span>
+<span class="nc" id="L533">			tableModel.setValueAt(m.getIs_feature_envy_by_rules(), m.getMethodId() - 1, 10);</span>
+		}
+<span class="nc" id="L535">	}</span>
+
+	/**
+	 * Receives and updates the outputs from the defect detection.
+	 * @param countersIPlasma array of integers.
+	 * @param countersPmd array of integers.
+	 */
+	public void receiveOutputDefectDetection(int[] countersIPlasma, int[] countersPmd) {
+<span class="fc" id="L543">		textFields[0].setText(&quot;&quot; + countersIPlasma[0]);</span>
+<span class="fc" id="L544">		textFields[1].setText(&quot;&quot; + countersIPlasma[1]);</span>
+<span class="fc" id="L545">		textFields[2].setText(&quot;&quot; + countersIPlasma[2]);</span>
+<span class="fc" id="L546">		textFields[3].setText(&quot;&quot; + countersIPlasma[3]);</span>
+
+<span class="fc" id="L548">		textFields[4].setText(&quot;&quot; + countersPmd[0]);</span>
+<span class="fc" id="L549">		textFields[5].setText(&quot;&quot; + countersPmd[1]);</span>
+<span class="fc" id="L550">		textFields[6].setText(&quot;&quot; + countersPmd[2]);</span>
+<span class="fc" id="L551">		textFields[7].setText(&quot;&quot; + countersPmd[3]);</span>
+<span class="fc" id="L552">	}</span>
+
+	/**
+	 * Receives and places on the Graphical User Interface (GUI)
+	 * the results from the rules defined.
+	 * @param origin String to setText.
+	 * @param counters array of integers.
+	 */
+	public void receiveOutputDefectDetectionDefinedRules(String origin, int[] counters) {
+<span class="fc" id="L561">		definedRules.setText(origin);</span>
+
+<span class="fc" id="L563">		textFields[8].setText(&quot;&quot; + counters[0]);</span>
+<span class="fc" id="L564">		textFields[9].setText(&quot;&quot; + counters[1]);</span>
+<span class="fc" id="L565">		textFields[10].setText(&quot;&quot; + counters[2]);</span>
+<span class="fc" id="L566">		textFields[11].setText(&quot;&quot; + counters[3]);</span>
+<span class="fc" id="L567">	}</span>
+
+	/**
+	 * Clears previous results from the text fields.
+	 */
+	public void clearDefectDetectionTable() {
+<span class="fc bfc" id="L573" title="All 2 branches covered.">		for(int i = 0; i != 12; i++) {</span>
+<span class="fc" id="L574">			textFields[i].setText(&quot;-&quot;);</span>
+		}
+<span class="fc" id="L576">		definedRules.setText(&quot;Defined Rules&quot;);</span>
+<span class="fc" id="L577">	}</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>AllTests (1) (13/dez/2019 14:41:44)</div></body></html>

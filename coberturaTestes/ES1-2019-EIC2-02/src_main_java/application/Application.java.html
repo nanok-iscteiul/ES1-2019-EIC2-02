@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Application.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">AllTests (1) (13/dez/2019 14:41:44)</a> &gt; <a href="../../index.html" class="el_group">ES1-2019-EIC2-02</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">application</a> &gt; <span class="el_source">Application.java</span></div><h1>Application.java</h1><pre class="source lang-java linenums">package application;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import gui.GUI;
+
+/**
+ * @author ES1-2019-EIC2-02
+ *
+ */
+public class Application {
+
+	/**
+	 * Path to excel file
+	 */
+	private String FILE_NAME;
+
+	/**
+	 * List with all methods obtained from excel file
+	 */
+	private List&lt;MethodData&gt; methodsData;
+
+	private GUI gui;
+
+	/**
+	 * Class constructor
+	 */
+<span class="fc" id="L40">	public Application() {</span>
+<span class="fc" id="L41">		gui = new GUI(this);</span>
+<span class="fc" id="L42">		methodsData = new ArrayList&lt;MethodData&gt;();</span>
+<span class="fc" id="L43">	}</span>
+
+	/**
+	 * Registers the path of excel file.
+	 * 
+	 * @param path a string containing the path giving the location of excel file
+	 */
+	public void setPath(String path) {
+<span class="fc" id="L51">		this.FILE_NAME = path;</span>
+<span class="fc" id="L52">	}</span>
+
+	/**
+	 * Updates the is_long_method_by_rules field in each method 
+	 * of the methods list if they meet both of the thresholds.
+	 * 
+	 * @param locThreshold the threshold for the number of lines of code of method
+	 * @param cycloThreshold the threshold for the cyclomatic complexity of the method
+	 * @see application.MethodData#setIs_long_method_by_rules(boolean)
+	 * 
+	 */
+	public void longMethod(int locThreshold, int cycloThreshold) {
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">		for (MethodData m : methodsData) {</span>
+<span class="nc bnc" id="L65" title="All 4 branches missed.">			if (m.getLoc() &gt; locThreshold &amp;&amp; m.getCyclo() &gt; cycloThreshold) {</span>
+<span class="nc" id="L66">				m.setIs_long_method_by_rules(true);</span>
+<span class="nc" id="L67">			} else {</span>
+<span class="nc" id="L68">				m.setIs_long_method_by_rules(false);</span>
+			}
+		}
+<span class="fc" id="L71">	}</span>
+
+	/**
+	 * Updates the is_feature_envy_by_rules field in each method
+	 * of the list of methods if they meet the required thresholds,
+	 * either in conjunction or separately.
+	 * 
+	 * @param atfdThreshold the threshold for the number of method accesses to methods of other classes
+	 * @param laaThreshold the threshold for the number of method accesses to attributes of the class itself
+	 * @param andOr (&quot;and&quot; or &quot;or&quot;) a string to select whether both of the thresholds needs to be met or only one
+	 * @see application.MethodData#setIs_feature_envy_by_rules(boolean)
+	 */
+	public void feature_envy(double atfdThreshold, double laaThreshold,  String andOr) {
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">		for (MethodData m : methodsData) {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">			if (andOr == &quot;and&quot;) {</span>
+<span class="nc bnc" id="L86" title="All 4 branches missed.">				if (m.getAtfd() &gt; atfdThreshold &amp;&amp; m.getLaa() &lt; laaThreshold) {</span>
+<span class="nc" id="L87">					m.setIs_feature_envy_by_rules(true);</span>
+<span class="nc" id="L88">				} else {</span>
+<span class="nc" id="L89">					m.setIs_feature_envy_by_rules(false);</span>
+				}
+<span class="nc bnc" id="L91" title="All 2 branches missed.">			} else if(andOr == &quot;or&quot;) {</span>
+<span class="nc bnc" id="L92" title="All 4 branches missed.">				if (m.getAtfd() &gt; atfdThreshold || m.getLaa() &lt; laaThreshold) {</span>
+<span class="nc" id="L93">					m.setIs_feature_envy_by_rules(true);</span>
+<span class="nc" id="L94">				} else {</span>
+<span class="nc" id="L95">					m.setIs_feature_envy_by_rules(false);</span>
+				}
+			}
+		}
+<span class="fc" id="L99">	}</span>
+
+	/**
+	 * Detects defects in each method in the methods list, as defined in the excel file.
+	 * 
+	 * @see application.Application#checkErrorIdentifiers(boolean, boolean, int[])
+	 * @see gui.GUI#receiveOutputDefectDetection(int[], int[])
+	 */
+	public void defectDetection() {
+<span class="fc" id="L108">		int[] countersIPlasma = { 0, 0, 0, 0 };// dci, dii, adci, adii, respetivamente para cada posicao do vetor</span>
+<span class="fc" id="L109">		int[] countersPmd = { 0, 0, 0, 0 };</span>
+
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">		for (MethodData m : methodsData) {</span>
+<span class="nc" id="L112">			countersIPlasma = checkErrorIdentifiers(m.getIs_long_method(), m.getIplasma(), countersIPlasma);</span>
+<span class="nc" id="L113">			countersPmd = checkErrorIdentifiers(m.getIs_long_method(), m.getPmd(), countersPmd);</span>
+		}
+<span class="fc" id="L115">		gui.receiveOutputDefectDetection(countersIPlasma, countersPmd);</span>
+<span class="fc" id="L116">	}</span>
+
+	/**
+	 * Detects defects in each method in the methods list, chosen by the user in the graphical interface.
+	 * Informs the graphical interface of the counters.
+	 * 
+	 * @param number (0 or 1) identifies if checking for defects in long method(0) or feature envy(1)
+	 * @see application.Application#checkErrorIdentifiers(boolean, boolean, int[])
+	 * @see gui.GUI#receiveOutputDefectDetectionDefinedRules(String, int[])
+	 */
+	public void defectDetectionDefinedRules(int number) {
+<span class="fc" id="L127">		int[] counters = { 0, 0, 0, 0 };</span>
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">		for (MethodData m : methodsData) {</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">			if (number == 0) {</span>
+<span class="nc" id="L130">				counters = checkErrorIdentifiers(m.getIs_long_method(), m.getIs_long_method_by_rules(), counters);</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">			} else if(number == 1) {</span>
+<span class="nc" id="L132">				counters = checkErrorIdentifiers(m.getIs_feature_envy(), m.getIs_feature_envy_by_rules(), counters);</span>
+			}
+		}
+<span class="fc bfc" id="L135" title="All 2 branches covered.">		if (number == 0) {</span>
+<span class="fc" id="L136">			gui.receiveOutputDefectDetectionDefinedRules(&quot;Long Method&quot;, counters);</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">		} else if(number == 1) {</span>
+<span class="fc" id="L138">			gui.receiveOutputDefectDetectionDefinedRules(&quot;Feature Envy&quot;, counters);</span>
+		}
+<span class="fc" id="L140">	}</span>
+
+	/**
+	 * Increments a defect detection value if applicable.
+	 * 
+	 * @param islong boolean to define whether the method is long(true) of feature envy(false)
+	 * @param iplasmaOrPmdOrDefRules boolean to additively specify which defect counter is increment
+	 * @param counters the array with the counters of defects
+	 * @return the update counters array
+	 */
+	private int[] checkErrorIdentifiers(boolean islong, boolean iplasmaOrPmdOrDefRules, int[] counters) {
+<span class="nc bnc" id="L151" title="All 4 branches missed.">		if (islong == true &amp;&amp; iplasmaOrPmdOrDefRules == true) {</span>
+<span class="nc" id="L152">			counters[0]++;</span>
+		}
+<span class="nc bnc" id="L154" title="All 4 branches missed.">		if (islong == false &amp;&amp; iplasmaOrPmdOrDefRules == true) {</span>
+<span class="nc" id="L155">			counters[1]++;</span>
+		}
+<span class="nc bnc" id="L157" title="All 4 branches missed.">		if (islong == false &amp;&amp; iplasmaOrPmdOrDefRules == false) {</span>
+<span class="nc" id="L158">			counters[2]++;</span>
+		}
+<span class="nc bnc" id="L160" title="All 4 branches missed.">		if (islong == true &amp;&amp; iplasmaOrPmdOrDefRules == false) {</span>
+<span class="nc" id="L161">			counters[3]++;</span>
+		}
+<span class="nc" id="L163">		return counters;</span>
+	}
+
+	/**
+	 * Register data from excel file. Starts by clearing data in the methodsData list and proceeds
+	 * iterating through rows and cells to create a method from each row of data from excel file.
+	 */
+	public void loadFile() {
+<span class="fc" id="L171">		methodsData.clear();</span>
+		try {
+<span class="fc" id="L173">			FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));</span>
+<span class="fc" id="L174">			Workbook workbook = new XSSFWorkbook(excelFile);</span>
+<span class="fc" id="L175">			Sheet datatypeSheet = workbook.getSheetAt(0);</span>
+<span class="fc" id="L176">			Iterator&lt;Row&gt; iterator = datatypeSheet.iterator();</span>
+<span class="fc" id="L177">			Row currentRow = iterator.next();</span>
+
+<span class="fc" id="L179">			int methodId = -1, loc = -1, cyclo = -1;</span>
+<span class="fc" id="L180">			double atfd = -1, laa = -1;</span>
+<span class="fc" id="L181">			boolean is_long_method = false, iPlasma = false, pmd = false, is_feature_envy = false;</span>
+<span class="fc" id="L182">			String packageName = &quot;&quot;, className = &quot;&quot;, methodName = &quot;&quot;;</span>
+
+<span class="fc bfc" id="L184" title="All 2 branches covered.">			while (iterator.hasNext()) {</span>
+<span class="fc" id="L185">				currentRow = iterator.next();</span>
+
+<span class="fc" id="L187">				int contadorCelula = 0;</span>
+<span class="fc" id="L188">				Iterator&lt;Cell&gt; cellIterator = currentRow.iterator();</span>
+
+<span class="fc bfc" id="L190" title="All 2 branches covered.">				while (cellIterator.hasNext()) {</span>
+<span class="fc" id="L191">					Cell currentCell = cellIterator.next();</span>
+<span class="fc" id="L192">					contadorCelula++;</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">					if (contadorCelula == 1)</span>
+<span class="fc" id="L194">						methodId = (int) currentCell.getNumericCellValue();</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">					if (contadorCelula == 2)</span>
+<span class="fc" id="L196">						packageName = currentCell.getStringCellValue();</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">					if (contadorCelula == 3)</span>
+<span class="fc" id="L198">						className = currentCell.getStringCellValue();</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">					if (contadorCelula == 4)</span>
+<span class="fc" id="L200">						methodName = currentCell.getStringCellValue();</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">					if (contadorCelula == 5)</span>
+<span class="fc" id="L202">						loc = (int) currentCell.getNumericCellValue();</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">					if (contadorCelula == 6)</span>
+<span class="fc" id="L204">						cyclo = (int) currentCell.getNumericCellValue();</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">					if (contadorCelula == 7)</span>
+<span class="fc" id="L206">						atfd = (double) currentCell.getNumericCellValue();</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">					if (contadorCelula == 8) {</span>
+<span class="fc" id="L208">						String aux_laa = currentCell.toString();</span>
+<span class="fc" id="L209">						laa = Double.parseDouble(aux_laa);</span>
+					}
+<span class="fc bfc" id="L211" title="All 2 branches covered.">					if (contadorCelula == 9)</span>
+<span class="fc" id="L212">						is_long_method = currentCell.getBooleanCellValue();</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">					if (contadorCelula == 10)</span>
+<span class="fc" id="L214">						iPlasma = currentCell.getBooleanCellValue();</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">					if (contadorCelula == 11)</span>
+<span class="fc" id="L216">						pmd = currentCell.getBooleanCellValue();</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">					if (contadorCelula == 12)</span>
+<span class="fc" id="L218">						is_feature_envy = currentCell.getBooleanCellValue();</span>
+
+				}
+
+<span class="fc" id="L222">				methodsData.add(new MethodData(methodId, packageName, className, methodName, loc, cyclo, atfd, laa,</span>
+<span class="fc" id="L223">						is_long_method, is_feature_envy, iPlasma, pmd));</span>
+			}
+<span class="fc" id="L225">			workbook.close();</span>
+
+<span class="pc" id="L227">		} catch (FileNotFoundException e) {</span>
+<span class="nc" id="L228">			System.err.println(&quot;Error - File not found&quot;);</span>
+<span class="nc" id="L229">		} catch (IOException e) {</span>
+<span class="nc" id="L230">			e.printStackTrace();</span>
+		}
+<span class="fc" id="L232">	}</span>
+
+	/** 
+	 * @return the string that contains the file name
+	 */
+	public String getFileName() {
+<span class="fc" id="L238">		return FILE_NAME;</span>
+	}
+
+	/**
+	 * @return the list of methods
+	 */
+	public List&lt;MethodData&gt; getMethodsData() {
+<span class="fc" id="L245">		return methodsData;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>AllTests (1) (13/dez/2019 14:41:44)</div></body></html>

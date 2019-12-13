@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>MethodData.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">AllTests (1) (13/dez/2019 14:41:44)</a> &gt; <a href="../../index.html" class="el_group">ES1-2019-EIC2-02</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">application</a> &gt; <span class="el_source">MethodData.java</span></div><h1>MethodData.java</h1><pre class="source lang-java linenums">package application;
+
+/**
+ * @author ESI-2019-EIC2-02
+ *
+ */
+public class MethodData {
+	private int methodId;
+	private String packageName, className, methodName;
+	private int loc, cyclo;
+	private double atfd, laa;
+	private boolean is_long_method, is_feature_envy, iplasma, pmd;
+	private boolean is_long_method_by_rules, is_feature_envy_by_rules;
+	
+<span class="fc" id="L15">	public MethodData(int methodId, String packageName, String className, String methodName, int loc, int cyclo,</span>
+			double atfd, double laa, boolean is_long_method, boolean is_feature_envy, boolean iplasma, boolean pmd) {
+<span class="fc" id="L17">		this.methodId = methodId;</span>
+<span class="fc" id="L18">		this.packageName = packageName;</span>
+<span class="fc" id="L19">		this.className = className;</span>
+<span class="fc" id="L20">		this.methodName = methodName;</span>
+<span class="fc" id="L21">		this.loc = loc;</span>
+<span class="fc" id="L22">		this.cyclo = cyclo;</span>
+<span class="fc" id="L23">		this.atfd = atfd;</span>
+<span class="fc" id="L24">		this.laa = laa;</span>
+<span class="fc" id="L25">		this.is_long_method = is_long_method;</span>
+<span class="fc" id="L26">		this.is_feature_envy = is_feature_envy;</span>
+<span class="fc" id="L27">		this.iplasma = iplasma;</span>
+<span class="fc" id="L28">		this.pmd = pmd;</span>
+<span class="fc" id="L29">	}</span>
+
+	/**
+	 * Defines the value of the field that points if the method 
+	 * is or isn't a long method by the rules specified
+	 * @param set the value of the specified field
+	 */
+	public void setIs_long_method_by_rules(boolean set) {
+<span class="fc" id="L37">		is_long_method_by_rules = set;</span>
+<span class="fc" id="L38">	}</span>
+
+	/**
+	 * Defines the value of the field that points if the method 
+	 * is or isn't a feature envy method by the rules specified
+	 * @param set the value of the specified field
+	 */
+	public void setIs_feature_envy_by_rules(boolean set) {
+<span class="fc" id="L46">		is_feature_envy_by_rules = set;</span>
+<span class="fc" id="L47">	}</span>
+
+	/**
+	 * @return the id of the method obtained from the Excel file
+	 */
+	public int getMethodId() {
+<span class="fc" id="L53">		return methodId;</span>
+	}
+
+	/**
+	 * @return the name of the Package
+	 */
+	public String getPackageName() {
+<span class="fc" id="L60">		return packageName;</span>
+	}
+
+	/**
+	 * @return the name of the Class
+	 */
+	public String getClassName() {
+<span class="fc" id="L67">		return className;</span>
+	}
+
+	
+	/**
+	 * @return the method name
+	 */
+	public String getMethodName() {
+<span class="fc" id="L75">		return methodName;</span>
+	}
+
+	/**
+	 * @return the number of lines of code
+	 */
+	public int getLoc() {
+<span class="fc" id="L82">		return loc;</span>
+	}
+
+	/**
+	 * @return the cyclomatic complexity
+	 */
+	public int getCyclo() {
+<span class="fc" id="L89">		return cyclo;</span>
+	}
+
+	/**
+	 * @return the number of accesses of
+	 * the method to methods of other Classes
+	 */
+	public double getAtfd() {
+<span class="fc" id="L97">		return atfd;</span>
+	}
+
+	/**
+	 * @return the number of accesses of
+	 * the method to attributes of own Class
+	 */
+	public double getLaa() {
+<span class="fc" id="L105">		return laa;</span>
+	}
+
+	/**
+	 * @return true if is_long_method
+	 * 		   false otherwise
+	 */
+	public boolean getIs_long_method() {
+<span class="fc" id="L113">		return is_long_method;</span>
+	}
+
+	/**
+	 * @return true if is_feature_envy
+	 * 		   false otherwise
+	 */
+	public boolean getIs_feature_envy() {
+<span class="fc" id="L121">		return is_feature_envy;</span>
+	}
+
+	/**
+	 * @return true is is iPlasma
+	 * 		   false otherwise
+	 */
+	public boolean getIplasma() {
+<span class="fc" id="L129">		return iplasma;</span>
+	}
+
+	/**
+	 * @return true if is Pmd
+	 * 		   false otherwise
+	 */
+	public boolean getPmd() {
+<span class="fc" id="L137">		return pmd;</span>
+	}
+
+	/**
+	 * @return true is is_long_method_by_rules
+	 * 		   false otherwise
+	 */
+	public boolean getIs_long_method_by_rules() {
+<span class="fc" id="L145">		return is_long_method_by_rules;</span>
+	}
+
+	/**
+	 * @return true id is_feature_envy_by_rules
+	 * 		   false otherwise
+	 */
+	public boolean getIs_feature_envy_by_rules() {
+<span class="fc" id="L153">		return is_feature_envy_by_rules;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>AllTests (1) (13/dez/2019 14:41:44)</div></body></html>
